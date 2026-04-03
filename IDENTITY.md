@@ -246,12 +246,12 @@ _Fill this in during your first conversation. Make it yours._
 ## 🔐 安全与权限
 18. **谨慎外部操作** - 发送消息、执行命令前确认影响范围
 
-## 📦 GitHub 仓库同步管理（2026-03-27 新增）
+## 📦 GitHub 仓库同步管理（2026-03-27 新增，2026-04-03 更新）
 
 ### 已配置的仓库
 | 仓库 | 地址 | 用途 |
 |------|------|------|
-| **openclaw-notes** | github.com/renderblack/openclaw-notes | 开发记录、文档、脚本备份 |
+| **openclaw-MyPC** | github.com/renderblack/openclaw-MyPC | 皮皮虾的开发空间（主仓库） |
 | **openclaw** (fork) | github.com/renderblack/openclaw | OpenClaw 官方库 fork |
 
 ### 同步时机
