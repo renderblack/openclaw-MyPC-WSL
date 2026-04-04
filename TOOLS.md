@@ -1,13 +1,18 @@
-# TOOLS.md - Local Notes
+# TOOLS.md - Local Notes (Windows Native Environment)
 
 Skills define _how_ tools work. This file is for _your_ specifics — the stuff that's unique to your setup.
 
-## 🛠️ 开发环境标准检查清单
+> **⚠️ Environment Note**: This OpenClaw instance runs on **Windows 11 + PowerShell** (Native).
+> - No WSL2 dependency.
+> - All scripts are PowerShell (`.ps1`) or native Windows executables.
+> - Paths use Windows format (`C:\Users\...`).
+
+## 🛠️ 开发环境标准检查清单 (PowerShell Native)
 
 每次开发任务前，按以下五个阶段检查环境：
 
 ### 第一阶段：Gateway 和服务状态
-```bash
+```powershell
 # 1. Gateway 状态
 openclaw gateway status
 
@@ -16,117 +21,96 @@ openclaw status
 ```
 
 ### 第二阶段：系统资源
-```bash
-# 3. 磁盘空间
-df -h /
+```powershell
+# 3. 磁盘空间 (C 盘)
+Get-PSDrive -PSProvider FileSystem | Select-Object Name, @{N='FreeGB';E={[math]::Round($_.Free/1GB,2)}}
 
 # 4. 内存
-free -h
+Get-CimInstance Win32_OperatingSystem | Select-Object @{N='TotalGB';E={[math]::Round($_.TotalVisibleMemorySize/1MB,2)}}, @{N='FreeGB';E={[math]::Round($_.FreePhysicalMemory/1MB,2)}}
 
 # 5. 进程数
-ps aux | grep -c openclaw
+Get-Process | Where-Object {$_.Name -like "*openclaw*"} | Measure-Object | Select-Object Count
 ```
 
 ### 第三阶段：网络连通性
-```bash
-# 6. 代理检查
-curl -s --proxy http://172.31.0.1:7890 https://www.baidu.com -I
+```powershell
+# 6. 代理检查 (通过 172.31.0.1:7890)
+curl -s --proxy http://172.31.0.1:7890 https://www.baidu.com -I | Select-Object -First 1
 
 # 7. Telegram 连接（检查 bot 是否可达）
-curl -s https://api.telegram.org/bot<token>/getMe
+# 注意：如果 Telegram 未启用，此步骤可跳过
+# curl -s https://api.telegram.org/bot<token>/getMe
 ```
 
 ### 第四阶段：日志检查
-```bash
-# 8. 当天日志（Windows PowerShell）
-Get-Content "$env:TEMP\openclaw\openclaw-$(Get-Date -Format 'yyyy-MM-dd').log" -Tail 50
+```powershell
+# 8. 当天日志
+$today = Get-Date -Format 'yyyy-MM-dd'
+$logPath = "$env:TEMP\openclaw\openclaw-$today.log"
+if (Test-Path $logPath) {
+    Get-Content $logPath -Tail 50
+} else {
+    Write-Host "No log file found at $logPath"
+}
 
 # 9. 错误统计
-(Get-Content "$env:TEMP\openclaw\openclaw-$(Get-Date -Format 'yyyy-MM-dd').log" -Tail 200 | Select-String "ERROR").Count
+if (Test-Path $logPath) {
+    $errors = (Get-Content $logPath -Tail 200 | Select-String "ERROR").Count
+    Write-Host "Error count in last 200 lines: $errors"
+}
 ```
 
 ### 第五阶段：技能状态
-```bash
+```powershell
 # 10. 已安装技能
 openclaw skills list
 ```
 
 ### ⚠️ 异常判断标准
+
 | 异常现象 | 可能原因 | 处理方式 |
 |---------|---------|---------|
 | Gateway not responding | 服务未启动 | `openclaw gateway start` |
-| RPC probe failed | 配置文件错误 | 检查 openclaw.json |
+| RPC probe failed | 配置文件错误 | 检查 `openclaw.json` |
 | Telegram polling stall | 网络波动 | 等待自动恢复或重启 |
-| 磁盘 > 90% | 日志过大 | 清理旧日志 |
+| 磁盘 > 90% | 日志过大 | 清理旧日志 (`Remove-Item ...`) |
 | 内存 < 500MB 可用 | 进程泄漏 | 重启 gateway |
 
 ---
 
-## 旧版检查清单（仅供参考）
-```bash
-# ===== 基础环境检查 =====
-# 1. 检查 Gateway 状态
-openclaw gateway status
+## Environment (Current Configuration)
 
-# 2. 检查当前系统
-uname -a
+- **OS**: Windows 11 (Native PowerShell)
+- **OpenClaw Home**: `C:\Users\Administrator\.openclaw`
+- **Workspace**: `C:\Users\Administrator\.openclaw\workspace`
+- **Proxy**: `http://172.31.0.1:7890` (Shared WSL network interface)
+- **Model Provider**: MiniMax / DeepSeek (via custom-newapi / direct)
+- **Telegram Bot**: Configured (Token stored in `openclaw.json`)
+- **QQ Bot**: Enabled
 
-# 3. 检查代理
-curl -s --proxy http://172.31.0.1:7890 https://www.baidu.com -I
+## Safe Working Directories
 
-# 4. 检查浏览器
-which chromium-browser  # WSL Linux 浏览器
-ls /mnt/c/Users/Administrator/Desktop/*.exe 2>/dev/null  # Windows 可执行文件
+- `C:\Users\Administrator\.openclaw\workspace`
+- `C:\Users\Administrator\projects` (if exists)
+- `C:\Temp` (or `%TEMP%`)
 
-# ===== 开发工具检查 =====
-# 5. 检查 Python 环境
-python3 --version
+## Common Tools Available
 
-# 6. 检查 Node.js 环境
-node --version
-
-# 7. 检查磁盘空间
-df -h /
-
-# 8. 检查 Git 状态
-git status
-
-# ===== 常见问题排查 =====
-# 9. 检查端口占用
-lsof -i:18789
-
-# 10. 检查日志大小
-ls -lh /tmp/openclaw/
-```
-
-## Environment
-- OS: Windows 11 + Ubuntu 22.04 WSL
-- OpenClaw home: /home/ubuntu2204/.openclaw
-- Workspace: /home/ubuntu2204/.openclaw/workspace
-- Proxy: http://172.31.0.1:7890
-- Model provider: Qwen Plus via DashScope / Aliyun
-- Telegram bot: enabled and working
-- **WSL Ubuntu系统密码: 123**
-
-## Safe working directories
-- /home/ubuntu2204/.openclaw/workspace
-- /home/ubuntu2204/projects
-- /tmp
-
-## Common tools available
-- curl
-- jq
-- git
-- rg
-- tmux
-- python3
-- pip3
+- `powershell` / `pwsh`
+- `curl` (PowerShell alias for `Invoke-WebRequest`)
+- `git`
+- `python` / `pip`
+- `node` / `npm`
+- `ffmpeg`
+- `jq` (via Chocolatey/Scoop or native PowerShell JSON parsing)
 
 ## Notes
-- Prefer using jq for JSON parsing.
-- Prefer using curl with proxy-aware environment.
-- For file operations, stay inside workspace unless explicitly requested.
-- For shell commands, avoid dangerous destructive commands unless confirmed.
+
+- **JSON Parsing**: Prefer native PowerShell (`ConvertFrom-Json`) or `jq` if installed.
+- **File Operations**: Stay inside `workspace` unless explicitly requested.
+- **Commands**: Avoid destructive commands (`rm`, `del`) without confirmation.
+- **Scripts**: All automation scripts should be `.ps1` (PowerShell), not `.sh` (Bash).
+- **Path Format**: Use Windows paths (`C:\...`) or PowerShell variables (`$env:TEMP`).
 
 ## Why Separate?
 
@@ -137,7 +121,8 @@ Skills are shared. Your setup is yours. Keeping them apart means you can update 
 OpenClaw 2026.3.24 新增 **Skills 一键安装** 功能，安装 Skill 时会自动检测并提示缺失的依赖。
 
 ### 常用命令
-```bash
+
+```powershell
 # 查看已安装的 Skills
 openclaw skills list
 
@@ -158,6 +143,7 @@ openclaw skills uninstall <skill-name>
 ```
 
 ### 已安装的 Skills
+
 | Skill | 说明 |
 |-------|------|
 | cli-anything | 浏览器控制（CLI-Anything + Selenium） |
@@ -168,14 +154,16 @@ openclaw skills uninstall <skill-name>
 | find-skills | 查找新 Skill |
 
 ### 常用 Skills 推荐
+
 - `gh-issues` - GitHub Issues 管理（需配置 GitHub Token）
 - `blogwatcher` - 博客/RSS 监控
 - `openhue` - 飞利浦 Hue 灯光控制
 - `sonoscli` - Sonos 音箱控制
-- `tmux` - tmux 会话管理
+- `tmux` - (Not applicable on Windows Native, use Windows Terminal tabs instead)
 
 ### Skill 安装示例
-```bash
+
+```powershell
 # 安装 GitHub Issues Skill（会提示输入 GitHub Token）
 openclaw skills install gh-issues
 
@@ -184,8 +172,9 @@ openclaw skills info gh-issues
 ```
 
 ### 自定义 Skill 位置
-- 用户安装的 Skills：`~/.openclaw/skills/`
-- 系统内置 Skills：`~/.npm-global/lib/node_modules/openclaw/skills/`
+
+- 用户安装的 Skills：`C:\Users\Administrator\.openclaw\skills\`
+- 系统内置 Skills：`C:\Users\Administrator\AppData\Roaming\npm\node_modules\openclaw\skills\`
 
 ---
 

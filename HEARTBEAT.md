@@ -22,6 +22,37 @@ Heartbeat 是 OpenClaw 的周期性检查机制。每次心跳触发时，会执
 | 下午 14-15点 | 上下文消耗 | 判断是否需要开新会话 |
 | 每2小时 | 主动推送 | proactive_check.sh 自动 Telegram 通知 |
 | 傍晚 18-19点 | 工作记录 | 更新 memory/YYYY-MM-DD.md |
+| **每周一次（建议周末）** | **学习晋升** | 检查 `.learnings/` 并晋升重要内容到 `MEMORY.md` |
+
+---
+
+## 🧠 学习记录检查与晋升（每周）
+
+**触发时机**：建议周末或长时间未检查时
+
+**检查内容**：
+1. **检查 `.learnings/ERRORS.md`**：
+   - 是否有重复出现的错误？
+   - 是否有需要固化的解决方案？
+2. **检查 `.learnings/LEARNINGS.md`**：
+   - 是否有通用性强的 `best_practice`？
+   - 是否有需要晋升到 `MEMORY.md` 的 `insight`？
+   - 是否有需要更新 `TOOLS.md` 的 `knowledge_gap`？
+3. **检查 `.learnings/FEATURE_REQUESTS.md`**：
+   - 是否有已实现但未标记的需求？
+   - 是否有高优先级待办？
+
+**晋升规则**：
+- **通用性强**（适用于所有项目） → 晋升到 `MEMORY.md`
+- **工作流优化** → 晋升到 `AGENTS.md`
+- **工具使用技巧** → 晋升到 `TOOLS.md`
+- **项目特定** → 保留在 `.learnings/` 或晋升到项目级 `AGENTS.md`
+
+**执行脚本**：
+```bash
+# 手动触发晋升
+bash ~/.openclaw/workspace/scripts/promote-learnings.sh
+```
 
 ---
 
