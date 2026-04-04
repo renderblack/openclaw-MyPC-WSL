@@ -23,7 +23,13 @@ openclaw status
 ### 第二阶段：系统资源
 ```powershell
 # 3. 磁盘空间 (C 盘)
-Get-PSDrive -PSProvider FileSystem | Select-Object Name, @{N='FreeGB';E={[math]::Round($_.Free/1GB,2)}}
+$disk = Get-PSDrive -PSProvider FileSystem | Where-Object {$_.Root -eq "C:\"}
+$freeGB = [math]::Round($disk.Free / 1GB, 2)
+$usedGB = [math]::Round($disk.Used / 1GB, 2)
+Write-Host "C: $freeGB GB Free / $usedGB GB Used"
+if ($freeGB -lt 30) {
+    Write-Host "⚠️ Warning: C 盘空间不足 30 GB，建议清理！" -ForegroundColor Yellow
+}
 
 # 4. 内存
 Get-CimInstance Win32_OperatingSystem | Select-Object @{N='TotalGB';E={[math]::Round($_.TotalVisibleMemorySize/1MB,2)}}, @{N='FreeGB';E={[math]::Round($_.FreePhysicalMemory/1MB,2)}}
@@ -83,7 +89,7 @@ openclaw skills list
 - **OS**: Windows 10 (Education Edition) (Native PowerShell)
 - **OpenClaw Home**: `C:\Users\Administrator\.openclaw`
 - **Workspace**: `C:\Users\Administrator\.openclaw\workspace`
-- **Proxy**: `http://172.31.0.1:7890` (Shared WSL network interface)
+- **Proxy**: `127.0.0.1:7890` (Local proxy, e.g., Clash/Clash Meta)
 - **Model Provider**: MiniMax / DeepSeek (via custom-newapi / direct)
 - **Telegram Bot**: Configured (Token stored in `openclaw.json`)
 - **QQ Bot**: Enabled
