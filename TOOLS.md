@@ -2,7 +2,7 @@
 
 Skills define _how_ tools work. This file is for _your_ specifics — the stuff that's unique to your setup.
 
-> **⚠️ Environment Note**: This OpenClaw instance runs on **Windows 11 + PowerShell** (Native).
+> **⚠️ Environment Note**: This OpenClaw instance runs on **Windows 10 (Education Edition) + PowerShell** (Native).
 > - No WSL2 dependency.
 > - All scripts are PowerShell (`.ps1`) or native Windows executables.
 > - Paths use Windows format (`C:\Users\...`).
@@ -80,7 +80,7 @@ openclaw skills list
 
 ## Environment (Current Configuration)
 
-- **OS**: Windows 11 (Native PowerShell)
+- **OS**: Windows 10 (Education Edition) (Native PowerShell)
 - **OpenClaw Home**: `C:\Users\Administrator\.openclaw`
 - **Workspace**: `C:\Users\Administrator\.openclaw\workspace`
 - **Proxy**: `http://172.31.0.1:7890` (Shared WSL network interface)

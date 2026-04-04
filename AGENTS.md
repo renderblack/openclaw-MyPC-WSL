@@ -112,7 +112,7 @@ Capture what matters. Decisions, context, things to remember. Skip the secrets u
 
 ## ⚠️ 环境兼容性检查（重要教训）
 
-**当前运行环境**: **Windows 11 + PowerShell (Native)** - 无 WSL2 依赖。所有脚本均为 `.ps1` 格式，路径使用 Windows 格式 (`C:\...`)。
+**当前运行环境**: **Windows 10 (教育版) + PowerShell (Native)** - 无 WSL2 依赖。所有脚本均为 `.ps1` 格式，路径使用 Windows 格式 (`C:\...`)。
 
 Before recommending or installing any tool/software, always check environment compatibility first. Common compatibility issues:
 
