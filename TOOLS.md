@@ -40,12 +40,12 @@ Get-Process | Where-Object {$_.Name -like "*openclaw*"} | Measure-Object | Selec
 
 ### 第三阶段：网络连通性
 ```powershell
-# 6. 代理检查 (通过 172.31.0.1:7890)
-curl -s --proxy http://172.31.0.1:7890 https://www.baidu.com -I | Select-Object -First 1
+# 6. 代理检查 (通过 127.0.0.1:7890)
+Test-NetConnection -ComputerName 127.0.0.1 -Port 7890 -WarningAction SilentlyContinue | Select-Object TcpTestSucceeded
 
 # 7. Telegram 连接（检查 bot 是否可达）
 # 注意：如果 Telegram 未启用，此步骤可跳过
-# curl -s https://api.telegram.org/bot<token>/getMe
+# Invoke-RestMethod -Uri "https://api.telegram.org/bot<token>/getMe"
 ```
 
 ### 第四阶段：日志检查
@@ -84,15 +84,24 @@ openclaw skills list
 
 ---
 
+## Hardware (Real Configuration)
+
+- **CPU**: Intel Core i7-9700KF @ 3.60GHz (8 cores, 8 threads)
+- **RAM**: 32GB
+- **Hostname**: XIONG
+- **C Drive**: 25.7 GB free / 222.9 GB total
+- **D Drive**: 201.5 GB free / 962.2 GB total
+
 ## Environment (Current Configuration)
 
-- **OS**: Windows 10 (Education Edition) (Native PowerShell)
+- **OS**: Windows 10 Education Edition (Build 19045, 64-bit)
 - **OpenClaw Home**: `C:\Users\Administrator\.openclaw`
 - **Workspace**: `C:\Users\Administrator\.openclaw\workspace`
 - **Proxy**: `127.0.0.1:7890` (Local proxy, e.g., Clash/Clash Meta)
 - **Model Provider**: MiniMax / DeepSeek (via custom-newapi / direct)
 - **Telegram Bot**: Configured (Token stored in `openclaw.json`)
 - **QQ Bot**: Enabled
+- **Chrome**: Installed at `C:\Program Files (x86)\Google\Chrome\Application\chrome.exe`
 
 ## Safe Working Directories
 

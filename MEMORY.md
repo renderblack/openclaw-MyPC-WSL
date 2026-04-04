@@ -9,11 +9,19 @@
 
 ## 🏗️ 环境配置
 
-### 系统环境
-- **操作系统**: Windows 11 + WSL2 (Ubuntu 22.04)
+### 系统环境（2026-04-04 修正）
+- **操作系统**: Windows 10 教育版 (Build 19045, 64 位)
+- **运行环境**: Windows Native PowerShell (无 WSL2)
 - **OpenClaw 版本**: 2026.4.2 (d74a122)
 - **工作空间**: `C:\Users\Administrator\.openclaw\workspace`
-- **代理配置**: `http://172.31.0.1:7890` (Clash for Windows)
+- **代理配置**: `http://127.0.0.1:7890` (Clash for Windows 本地代理)
+
+### 硬件配置
+- **CPU**: Intel Core i7-9700KF @ 3.60GHz (8 核 8 线程)
+- **内存**: 32GB (34.29 GB)
+- **主机名**: XIONG
+- **C 盘**: 25.7 GB 可用 / 222.9 GB 总容量 (88.5% 已用)
+- **D 盘**: 201.5 GB 可用 / 962.2 GB 总容量
 
 ### 工具链状态
 | 工具 | 版本 | 状态 |
@@ -21,7 +29,7 @@
 | Node.js | v24.14.1 | ✅ 已安装 |
 | npm | v11.12.1 | ✅ 已安装 |
 | Python | v3.7.4 | ✅ 已安装 |
-| Git | v2.37.1 | ✅ 已安装 |
+| Git | v2.37.1 (Windows) | ✅ 已安装 |
 | curl | v7.78.0 | ✅ 已安装 |
 | ffmpeg | N-123824 | ✅ 已安装 |
 | gh (GitHub CLI) | v2.40.1 | ✅ 已安装 |

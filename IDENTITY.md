@@ -147,11 +147,11 @@ _Fill this in during your first conversation. Make it yours._
 
 ### 第二步：环境检查（每次开发任务前必须做）
 1. **执行 `openclaw gateway status`** - 确认网关和服务状态
-2. **执行 `uname -a`** - 确认当前是 WSL Linux 还是其他环境
-3. **检查代理** - 执行 `curl -s --proxy http://172.31.0.1:7890 https://www.baidu.com -I` 确认网络通
-4. **检查浏览器** - 执行 `which chromium-browser` 确认浏览器类型
-5. **检查磁盘空间** - 执行 `df -h /` 确认有足够空间（>1GB）
-6. **检查内存** - 执行 `free -h` 确认有足够内存（>1GB 可用）
+2. **执行 `$PSVersionTable.PSVersion`** - 确认 PowerShell 版本
+3. **检查代理** - 执行 `Test-NetConnection -ComputerName 127.0.0.1 -Port 7890` 确认网络通
+4. **检查浏览器** - 执行 `chrome --version` 确认 Chrome 可用
+5. **检查磁盘空间** - 执行 `Get-PSDrive C` 确认 C 盘有足够空间（> 20GB）
+6. **检查内存** - 执行 `Get-CimInstance Win32_OperatingSystem | Select FreePhysicalMemory` 确认有足够内存
 
 ### 第三步：任务规划（按需执行）
 5. **检查技能** - 任务相关时，先读取 skill 的 SKILL.md
@@ -159,9 +159,9 @@ _Fill this in during your first conversation. Make it yours._
 7. **先汇报再开发** - 开发前给出多个思路、方案，待用户评审并选择后再执行
 8. **评估多方案** - 涉及操作软件行为时，先评估实现方式
 9. **工具兼容性检查** - 推荐任何工具前，先确认当前环境是否兼容
-   - 当前 OpenClaw 运行在 **WSL2（Linux）** 环境
-   - Windows 应用（.exe/.msi）需要考虑是否能与 WSL2 互通
-   - 涉及跨系统操作时，先说明兼容性问题，不盲目推荐安装
+   - 当前 OpenClaw 运行在 **Windows Native PowerShell** 环境
+   - 所有脚本应为 PowerShell (`.ps1`) 或 Windows 原生可执行文件
+   - 涉及 Linux 命令时需使用 `bash -c` 或转换
 
 ## 第四步：任务跟踪汇报（必做）
 
@@ -207,21 +207,25 @@ _Fill this in during your first conversation. Make it yours._
 
 > **注意：** 任务开始时就要告诉用户预计时长和汇报频率，不要等用户来问
 
-## 🖥️ 当前环境
-- **宿主机**: Windows 11
-- **虚拟化层**: WSL2 (Windows Subsystem for Linux 2)
-- **Linux 发行版**: Ubuntu 22.04 LTS
-- **OpenClaw 安装路径**: `/home/ubuntu2204/.openclaw`
-- **工作空间**: `/home/ubuntu2204/.openclaw/workspace`
-- **网络**: 通过 WSL 代理 (172.31.0.1:7890) 访问外网
-- **Windows 互操作**: 支持通过 `/mnt/c/` 访问 Windows 文件系统
+## 🖥️ 当前环境（2026-04-04 修正）
+- **操作系统**: Windows 10 教育版 (Build 19045, 64 位)
+- **运行环境**: Windows Native PowerShell (无 WSL2)
+- **OpenClaw 版本**: 2026.4.2 (d74a122)
+- **工作空间**: `C:\Users\Administrator\.openclaw\workspace`
+- **网络**: 通过本地代理 (127.0.0.1:7890) 访问外网
+- **Chrome 版本**: Chrome 141 (已安装)
 
-### 🌐 浏览器环境（重要！）
+### 硬件配置
+- **CPU**: Intel Core i7-9700KF @ 3.60GHz (8 核 8 线程)
+- **内存**: 32GB
+- **主机名**: XIONG
+- **C 盘**: 25.7 GB 可用 / 222.9 GB 总容量
+
+### 🌐 浏览器环境
 | 浏览器 | 位置 | 用途 |
 |--------|------|------|
-| **snap Chromium** | `/usr/bin/chromium-browser` | WSL Linux 环境，agent-browser 默认使用 |
-| **Windows Edge** | `C:\Program Files...` | Windows 浏览器，露头模式用 |
-| **agent-browser.exe** | `C:\Users\Administrator\Desktop\` | Windows 版本可执行文件 |
+| **Chrome** | `C:\Program Files (x86)\Google\Chrome\Application\chrome.exe` | CDP 浏览器控制 |
+| **OpenClaw Gateway** | 127.0.0.1:18789 | 本地服务 |
 
 > ⚠️ **开发注意**: 方案需兼顾 WSL + Windows 双环境，考虑文件路径、网络代理、进程管理等因素
 
