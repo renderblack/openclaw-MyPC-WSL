@@ -73,6 +73,7 @@
 - [x] FFmpeg 安装完成
 - [x] Claude Code 源码分析计划制定
 - [x] 模型切换回 M2.7-highspeed
+- [x] **OCR 能力配置完成** - Python 3.11.9 + PaddlePaddle GPU + PaddleOCR
 - [x] Chrome 浏览器自动化（已实现 via cli-anything skill）
 - [x] 集成 agency-agents 智能体集合 (162 个)
 - [x] NPM 镜像配置（npmmirror.com）
