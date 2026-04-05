@@ -128,7 +128,6 @@
 
 9. **插件依赖修复** - `openclaw doctor --fix`
 10. **proactive_check.sh 验证**
-11. **小米 10 Pro 适配** - OpenClaw 安卓客户端（待确认是否需要）
 
 ---
 
