@@ -43,10 +43,16 @@
   - 规则位置：IDENTITY.md → 核心执行准则
   - 状态：已确立，执行时遵守
 
-- [ ] **技能安装** (网络波动)
-  - himalaya（邮件 CLI）
-  - blogwatcher（RSS 监控）
-  - 状态：网络波动导致安装失败，稍后重试
+- [ ] **OCR 能力配置** (2026-04-05 新增)
+  - 方案：PaddleOCR + Tesseract 双轨制
+  - 硬件：NVIDIA RTX 2070 (8GB GDDR6, CUDA 13.0)
+  - 目标：支持截图/文档/扫描件/手写体，离线使用
+  - 执行步骤：
+    1. 安装 Tesseract (Windows OCR 引擎)
+    2. 安装 PaddlePaddle GPU 版 (CUDA 13.0)
+    3. 安装 PaddleOCR
+    4. 测试验证
+  - 状态：⏳ 待执行
 
 ### 🟢 低优先级
 

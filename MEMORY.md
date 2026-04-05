@@ -124,6 +124,17 @@
 8. **技能依赖完善**
    - himalaya (邮件 CLI)、blogwatcher (RSS 监控)
 
+9. **OCR 能力配置** (2026-04-05 新增)
+   - **方案**: PaddleOCR + Tesseract 双轨制
+   - **硬件**: NVIDIA RTX 2070 (8GB GDDR6, CUDA 13.0)
+   - **目标**: 支持截图/文档/扫描件/手写体，离线使用
+   - **步骤**:
+     1. 安装 Tesseract (Windows OCR 引擎)
+     2. 安装 PaddlePaddle GPU 版
+     3. 安装 PaddleOCR
+     4. 测试验证
+   - **状态**: ⏳ 待执行
+
 ### 🟢 低优先级
 
 9. **插件依赖修复** - `openclaw doctor --fix`
