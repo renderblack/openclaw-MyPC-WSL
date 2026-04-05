@@ -79,32 +79,64 @@
 
 ## 📋 待办事项 (优先级排序)
 
-### 高优先级
-1. **浏览器能力升级** - 实现并测试 Edge 浏览器自动化控制
-   - 当前状态: Selenium 已安装，ChromeDriver 版本不匹配
-   - 目标: 针对 Edge 重构，实现自动下载、导航、截图等基础功能
+### 🔴 高优先级
 
-2. **C盘空间分析** - 定位 179 GB 未知占用源
-   - 当前状态: 已发现 15.4 GB 缓存占用，剩余 179.6 GB 未知
-   - 工具需求: WizTree (磁盘分析工具)
-   - 怀疑对象: WSL2 虚拟磁盘、系统还原点、休眠文件
+1. **Claude Code 源码分析计划** (2026-04-05 新增)
+   - **目标**: 下载并分析 Claude Code 2.1.88 泄露源码
+   - **存储位置**: D:\ClaudeCode\
+   - **分析范围**: 架构、Agent、工具调用、与 OpenClaw 对比
+   - **执行状态**: ⏳ 待执行（等待腾讯云镜像或 GitHub 备选）
+   - **计划文档**: `docs/Claude-Code源码分析计划.md`
 
-3. **小米 10 Pro 适配** - 寻找 OpenClaw 安卓安装包
-   - 当前状态: 查询官网下载页面中
-   - 设备信息: Android 10/11/12/13/14
+2. **FFmpeg CLI 自动化测试** (2026-04-05 新增)
+   - **脚本位置**: `scripts/ffmpeg-cli.ps1`
+   - **支持功能**: convert/trim/merge/extract-audio/add-watermark/batch-convert/info
+   - **状态**: 脚本已创建，待测试
 
-### 中优先级
-4. **技能依赖完善** - 安装缺失的非核心工具
-   - himalaya (邮件 CLI)
-   - blogwatcher (RSS 监控)
+3. **ClawLibrary 修复** (2026-04-05 更新)
+   - **问题**: 502 Bad Gateway (Vite 开发服务器异常)
+   - **访问地址**: `http://localhost:5173/`
+   - **状态**: 待排查
 
-5. **插件依赖修复** - 安装可选插件依赖
-   - 当前状态: 43 个可选插件依赖未安装
-   - 命令: `openclaw doctor --fix`
+4. **WizTree 添加到安全软件白名单** (2026-04-05 新增)
+   - **原因**: 安全软件曾终止 WizTree 进程
+   - **状态**: 待处理
 
-### 低优先级
-6. **ClawLibrary 验证** - 检查克隆状态和运行情况
-7. **proactive_check.sh 验证** - 确保主动推送机制正常运行
+5. **腾讯系文件迁移到 D: 盘** (2026-04-05 新增)
+   - **目标**: 释放 C 盘空间
+   - **涉及**: 企业微信、微信等腾讯系软件
+   - **状态**: 待执行
+
+### 🟡 中优先级
+
+6. **命令执行智能判断准则落地** (2026-04-04 确立)
+   - **要求**: 执行任何命令前，先判断 Linux vs Windows
+   - **规则**: Linux 命令用 `bash -c` 包装，不确定时也优先用 `bash -c`
+   - **已知坑点**: `head`、`@{N=...;E={...}}`、`if [` 等
+   - **状态**: 已写入 IDENTITY.md，执行时需严格遵守
+
+7. **浏览器能力升级** - Edge 自动化
+   - **当前状态**: Selenium 已安装，ChromeDriver 版本不匹配
+   - **目标**: 重构为 Edge 版本
+
+8. **技能依赖完善**
+   - himalaya (邮件 CLI)、blogwatcher (RSS 监控)
+
+### 🟢 低优先级
+
+9. **插件依赖修复** - `openclaw doctor --fix`
+10. **proactive_check.sh 验证**
+11. **小米 10 Pro 适配** - OpenClaw 安卓安装包
+
+---
+
+### ✅ 已完成 (2026-04-05)
+
+- [x] C 盘清理（45GB → 89GB）
+- [x] WizTree 安装 + CLI-Anything 自动化
+- [x] FFmpeg 安装 + CLI 脚本创建
+- [x] Claude Code 源码分析计划制定
+- [x] 模型切换回 M2.7-highspeed
 
 ---
 
