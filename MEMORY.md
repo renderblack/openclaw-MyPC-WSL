@@ -3,7 +3,7 @@
 ## 📅 创建时间
 - **创建日期**: 2026-04-04
 - **创建原因**: 整合 2026-04-03 和 2026-04-04 的每日记录,形成长期记忆
-- **最后更新**: 2026-04-04 15:45
+- **最后更新**: 2026-04-06 09:08
 
 ---
 
@@ -115,69 +115,52 @@
    - **已知坑点**: `head`、`@{N=...;E={...}}`、`if [` 等
    - **状态**: 已写入 IDENTITY.md,执行时需严格遵守
 
-### 🟡 中优先级
-
-6. **命令执行智能判断准则落地** (2026-04-04 确立)
-   - **要求**: 执行任何命令前,先判断 Linux vs Windows
-   - **规则**: Linux 命令用 `bash -c` 包装,不确定时也优先用 `bash -c`
-   - **已知坑点**: `head`、`@{N=...;E={...}}`、`if [` 等
-   - **状态**: 已写入 IDENTITY.md,执行时需严格遵守
-
-8. **技能依赖完善**
-   - himalaya (邮件 CLI)、blogwatcher (RSS 监控)
-
-9. **本地文件自然语言模糊搜索** (2026-04-05 新增)
+7. **本地文件自然语言模糊搜索** (2026-04-05 新增)
    - **目标**: 通过自然语言描述快速从本地文件查找内容
    - **建议方案**: ripgrep 全文检索 + LLM 语义筛选(方案 A)
    - **待确认**: 搜索范围(workspace/C盘)、速度要求
    - **状态**: ⏳ 待用户选择方案
 
-10. **OCR 能力配置** (2026-04-05 新增, 2026-04-06 完成)
-   - **方案**: PaddleOCR + Tesseract 双轨制
-   - **硬件**: NVIDIA RTX 2070 (8GB GDDR6, CUDA 12.2)
-   - **目标**: 支持截图/文档/扫描件/手写体,离线使用
-   - **安装步骤**:
-     1. Tesseract v5.5.0 - ✅ 已安装 (`C:\Program Files\Tesseract-OCR`)
-     2. PaddlePaddle GPU 2.4.2 - ✅ 已安装 (CUDA 11.2, Python 3.7 兼容)
-     3. PaddleOCR 2.7.0.2 - ✅ 已安装
-     4. opencv-python 4.6.0.66 - ✅ 已升级 (修复版本冲突)
-     5. lmdb 1.3.0 - ✅ 手动安装 (Python 3.7 专用 wheel)
-   - **状态**: ✅ 已完成
-   - **备注**:
-     - Python 3.7 环境需注意：lmdb 需用 v1.3.0 wheel，paddlepaddle 需用 v2.4.2
-     - opencv-python 和 opencv-contrib-python 版本必须匹配 (4.6.0.66)
-     - PaddleOCR 本身完全离线（模型 17.2 MB 已备份）
-     - Tesseract 中文识别质量差，作为备用价值低
-     - CUDA DLL 修复：cublas64_112.dll 已复制到 System32（解决 GPU 初始化失败）
+8. **技能依赖完善**
+   - himalaya (邮件 CLI)、blogwatcher (RSS 监控)
+   - **状态**: ⏳ 待执行
 
 ### 🟢 低优先级
 
-11. **插件依赖修复** - `openclaw doctor --fix`
-    - 状态: ✅ 已完成 (2026-04-06)
-    - 结果: 归档了 3 个孤立 transcript 文件
+9. **插件依赖修复** - `openclaw doctor --fix`
+   - 状态: ✅ 已完成 (2026-04-06)
+   - 结果: 归档了 3 个孤立 transcript 文件
 
-12. **proactive_check.ps1 重建**
+10. **proactive_check.ps1 重建**
     - 状态: ✅ 已完成 (2026-04-06)
-    - 说明: 原有 proactive_check.sh 在 Backup 里,是 WSL2 版本
+    - 说明: 原有 proactive_check.sh 在 Backup 里，是 WSL2 版本
     - 新建: proactive_check.ps1 (Windows Native PowerShell)
-    - 功能: 检查网关/磁盘/内存/技能状态,推送到 Telegram
+    - 功能: 检查网关/磁盘/内存/技能状态，推送到 Telegram
     - 测试: 推送成功 - Gateway [ON] Disk 65% Mem 16.3 GB
+
+11. **腾讯系文件迁移到 D: 盘** (2026-04-05 新增)
+    - **目标**: 释放 C 盘空间
+    - **涉及**: 企业微信、微信等腾讯系软件
+    - **状态**: ⏳ 待执行
+
+12. **WizTree 添加到安全软件白名单** (2026-04-05 新增)
+    - **原因**: 安全软件曾终止 WizTree 进程
+    - **状态**: ⏳ 待处理
 
 ---
 
 ### ✅ 已完成 (2026-04-06)
 
-- [x] C 盘清理(45GB → 89GB)
+- [x] C 盘清理（45GB → 89GB）
 - [x] WizTree 安装 + CLI-Anything 自动化
 - [x] FFmpeg 安装 + CLI 脚本创建
 - [x] Claude Code 源码分析计划制定
 - [x] 模型切换回 M2.7-highspeed
-- [x] **OCR 双轨制配置完成** (PaddleOCR + Tesseract, 2026-04-06)
-- [x] **OCR 稳定性保障方案** (2026-04-06)
-  - 脚本: `scripts/ocr_stable.py` (GPU/CPU 自动降级)
-  - 脚本: `scripts/ocr_health_check.ps1` (健康检查)
-  - 备份: `workspace/models/paddleocr/whl_backup/` (17.2 MB)
-  - 注意: PaddleOCR 本身已完全离线,Tesseract 备用价值低
+- [x] **OCR 能力配置完成** (PaddleOCR GPU 2026-04-06)
+- [x] **OCR 稳定性保障方案** (ocr_stable.py + health_check + 模型备份)
+- [x] **FFmpeg CLI 自动化测试** (scripts/ffmpeg-cli.ps1)
+- [x] 插件依赖修复 (openclaw doctor --fix)
+- [x] proactive_check.ps1 重建
 
 ---
 
