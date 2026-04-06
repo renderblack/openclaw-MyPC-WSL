@@ -73,6 +73,19 @@ bash ~/.openclaw/workspace/scripts/promote-learnings.sh
 [其他重要事件]
 ```
 
+**注意：** 推送完检查结果后，必须同步更新 MEMORY.md 中的硬件配置数据。
+
+---
+
+## 状态检查后同步规则（强制）
+
+每次执行状态检查后（主动推送、heartbeat 检查等），必须同步更新 memory：
+- **C盘空间** → 更新 MEMORY.md 硬件配置
+- **内存** → 更新 MEMORY.md 硬件配置
+- **磁盘状态** → 更新 MEMORY.md 硬件配置
+
+**禁止：** 把旧数据当现实用，必须先跑命令再引用。
+
 ---
 
 ## 上下文检查（下午）

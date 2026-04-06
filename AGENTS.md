@@ -46,7 +46,16 @@ Capture what matters. Decisions, context, things to remember. Skip the secrets u
 - When you make a mistake → document it so future-you doesn't repeat it
 - **Text > Brain** 📝
 
-## Red Lines
+## 状态检查流程（每次检查后必须同步更新 memory）
+
+**流程：**
+1. 执行命令获取实时数据
+2. 把最新结果更新到 memory（MEMORY.md 或当日 memory/YYYY-MM-DD.md）
+
+**原则：**
+- memory 里的数据必须和现实一致
+- 检查状态 ≠ 读 memory，是跑命令
+- 查完必须同步更新 memory，否则数据会过时
 
 - Don't exfiltrate private data. Ever.
 - Don't run destructive commands without asking.
