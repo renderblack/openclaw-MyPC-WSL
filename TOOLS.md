@@ -191,6 +191,47 @@ openclaw skills info gh-issues
 - 用户安装的 Skills：`C:\Users\Administrator\.openclaw\skills\`
 - 系统内置 Skills：`C:\Users\Administrator\AppData\Roaming\npm\node_modules\openclaw\skills\`
 
+## 本地文件搜索工具 (2026-04-06)
+
+### 工具链
+| 工具 | 版本 | 路径 | 用途 |
+|------|------|------|------|
+| ripgrep | 14.1.0 | `rg` | 内容全文搜索 |
+| Everything | 1.4.11032 | `C:\Program Files\Everything\Everything.exe` | 文件名索引 |
+| es.exe | 1.1.0.30 | `C:\ProgramData\chocolatey\lib\es\tools\es.exe` | CLI调用接口 |
+
+### 混合搜索脚本
+**位置**: `scripts/hybrid-search.ps1`
+
+**用法**:
+```powershell
+# 搜索内容和文件名
+.\hybrid-search.ps1 -Keyword "关键词" -Type all
+
+# 只搜内容
+.\hybrid-search.ps1 -Keyword "关键词" -Type content
+
+# 只搜文件名
+.\hybrid-search.ps1 -Keyword "关键词" -Type name
+
+# 指定目录和扩展名
+.\hybrid-search.ps1 -Keyword "关键词" -Dir "D:\项目" -Ext "md"
+```
+
+**直接调用命令**:
+```powershell
+# ripgrep 内容搜索
+rg "关键词" --max-count 20 --json "C:\path\to\dir"
+
+# es.exe 文件名搜索 (需要用cmd/c包装)
+cmd /c "es.exe 关键词 -path C:\path -max-results 20"
+```
+
+### 经验总结
+1. **es.exe IPC问题**: PowerShell直接调用es.exe会挂起，必须用`cmd /c`包装
+2. **编码问题**: PowerShell脚本避免中文注释，改用英文
+3. **速度**: ripgrep毫秒级，es秒级
+
 ---
 
 Add whatever helps you do your job. This is your cheat sheet.
