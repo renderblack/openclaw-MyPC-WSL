@@ -107,3 +107,23 @@
 - Gateway：127.0.0.1:18790（本地回环）
 - 微信插件：openclaw-weixin v2.1.7，已连接
 - 已安装技能：160+
+
+---
+
+## 📚 3D图像重建学习板块
+
+**路径**：`learn/3d-reconstruction/`
+
+**内容**：
+- 技术路线图（NeRF → 3DGS → EDGS）
+- GitHub 资源汇总
+- 学习笔记和计划
+
+**GitHub 热门仓库**：
+- awesome-3D-gaussian-splatting ⭐8488
+- supersplat ⭐4107
+- gaustudio ⭐1735
+
+**下一步**：
+- 精读 3DGS 论文
+- 运行 gaustudio Demo
