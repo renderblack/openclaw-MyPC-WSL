@@ -80,7 +80,9 @@
 ### 高优先级
 - [ ] 夸克网盘上传（Selenium 方案待测试）
 - [ ] 定时推送功能配置（Cron）
-- [ ] 修复网关启动冲突（Scheduled Task LogonTrigger/BootTrigger 冲突）
+
+### 已解决
+- [x] 修复网关启动冲突（Scheduled Task 冲突 + 微信插件死循环）— 2026-04-09
 
 ### 中优先级
 - [ ] 关注 music_generate bug 修复
@@ -99,6 +101,7 @@
 
 | 日期 | 项目 |
 |------|------|
+| 2026-04-09 | 修复网关启动问题（禁用冲突 Scheduled Task + 卸载微信插件） |
 | 2026-04-08 | MiniMax-AI/skills 配置（14个技能） |
 | 2026-04-08 | 重新配置模型（M2.7-highspeed） |
 | 2026-04-08 | Claude Code 源码分析（4756文件 + 5份文档） |
@@ -115,6 +118,13 @@
 - **原因**: 文件编码问题，Git 仓库中所有版本均已损坏（所有 commits 都包含乱码）
 - **解决**: 用 `read` 工具读取内容，用 `write` 工具重建文件（write 以 UTF-8 保存，正常）
 - **教训**: 避免用 PowerShell 直接读写含中文的 UTF-8 文件；优先用 OpenClaw 的 read/write 工具
+
+### 微信插件死循环 Bug（2026-04-09）
+- **问题**: openclaw-weixin 插件启动时死循环，导致 Gateway 启动等待 2 分钟+
+- **原因**: setWeixinRuntime 每秒被调用多次，形成死循环
+- **解决**: 完全卸载微信插件（删除文件 + 清理配置）
+- **注意**: 即使设置 `enabled: false`，插件文件存在仍会被扫描加载
+- **备份**: `C:\Users\Administrator\.openclaw\backups\weixin-backup-2026-04-09\`
 
 ### 环境兼容性原则
 - 推荐/安装任何工具前，先确认环境兼容性（Windows Native vs WSL2）
