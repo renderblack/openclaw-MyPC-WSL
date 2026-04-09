@@ -1,165 +1,82 @@
+﻿> ## Documentation Index
+> Fetch the complete documentation index at: https://docs.openclaw.ai/llms.txt
+> Use this file to discover all available pages before exploring further.
+
 # Task Flow
 
-Task Flow is a directed graph executor for orchestrating complex, multi-step agentic workflows. It lets you define a graph of tasks with dependencies, then execute them in topological order — running independent branches in parallel and pausing at decision points.
+# Task Flow
 
-## Concepts
+Task Flow is the flow orchestration substrate that sits above [background tasks](/automation/tasks). It manages durable multi-step flows with their own state, revision tracking, and sync semantics while individual tasks remain the unit of detached work.
 
-### Nodes and edges
+## When to use Task Flow
 
-* **Nodes** — individual units of work (tool calls, agent runs, or sub-workflows)
-* **Edges** — directional dependencies (`A → B` means B waits for A)
-* **Parallel branches** — tasks with no mutual dependency run concurrently
+Use Task Flow when work spans multiple sequential or branching steps and you need durable progress tracking across gateway restarts. For single background operations, a plain [task](/automation/tasks) is sufficient.
 
-### Task states
+| Scenario                              | Use                  |
+| ------------------------------------- | -------------------- |
+| Single background job                 | Plain task           |
+| Multi-step pipeline (A then B then C) | Task Flow (managed)  |
+| Observe externally created tasks      | Task Flow (mirrored) |
+| One-shot reminder                     | Cron job             |
 
-| State       | Meaning                                           |
-| ----------- | ------------------------------------------------- |
-| `pending`   | Waiting for dependencies                          |
-| `running`   | Currently executing                               |
-| `waiting`   | Paused at a decision (awaiting external input)    |
-| `completed` | Finished successfully                             |
-| `failed`    | Errored; downstream tasks are cancelled           |
-| `cancelled` | Manually stopped; downstream tasks are cancelled  |
+## Sync modes
 
-### Routing modes
+### Managed mode
 
-Tasks support three routing behaviors:
+Task Flow owns the lifecycle end-to-end. It creates tasks as flow steps, drives them to completion, and advances the flow state automatically.
 
-* **linear** — process edges in definition order
-* **dynamic** — routing determined at runtime based on context
-* **conditional** — branch based on previous task output
+Example: a weekly report flow that (1) gathers data, (2) generates the report, and (3) delivers it. Task Flow creates each step as a background task, waits for completion, then moves to the next step.
 
-## Defining a flow
-
-Task Flow graphs are defined as JSON and submitted via the `openclaw tasks` CLI or the SDK.
-
-```json
-{
-  "name": "build-and-deploy",
-  "nodes": {
-    "checkout": {
-      "type": "tool",
-      "tool": "exec",
-      "params": { "command": "git checkout main" }
-    },
-    "test": {
-      "type": "tool",
-      "tool": "exec",
-      "params": { "command": "npm test" },
-      "depends": ["checkout"]
-    },
-    "build": {
-      "type": "tool",
-      "tool": "exec",
-      "params": { "command": "npm run build" },
-      "depends": ["checkout"]
-    },
-    "deploy": {
-      "type": "tool",
-      "tool": "exec",
-      "params": { "command": "npm run deploy" },
-      "depends": ["test", "build"]
-    }
-  }
-}
+```
+Flow: weekly-report
+  Step 1: gather-data     → task created → succeeded
+  Step 2: generate-report → task created → succeeded
+  Step 3: deliver         → task created → running
 ```
 
-## Execution
+### Mirrored mode
 
-### Startup
+Task Flow observes externally created tasks and keeps flow state in sync without taking ownership of task creation. This is useful when tasks originate from cron jobs, CLI commands, or other sources and you want a unified view of their progress as a flow.
 
-Submit a flow:
+Example: three independent cron jobs that together form a "morning ops" routine. A mirrored flow tracks their collective progress without controlling when or how they run.
 
-```bash
-openclaw tasks submit build-and-deploy.json
+## Durable state and revision tracking
+
+Each flow persists its own state and tracks revisions so progress survives gateway restarts. Revision tracking enables conflict detection when multiple sources attempt to advance the same flow concurrently.
+
+## Cancel behavior
+
+`openclaw tasks flow cancel` sets a sticky cancel intent on the flow. Active tasks within the flow are cancelled, and no new steps are started. The cancel intent persists across restarts, so a cancelled flow stays cancelled even if the gateway restarts before all child tasks have terminated.
+
+## CLI commands
+
+```bash  theme={"theme":{"light":"min-light","dark":"min-dark"}}
+# List active and recent flows
+openclaw tasks flow list
+
+# Show details for a specific flow
+openclaw tasks flow show <lookup>
+
+# Cancel a running flow and its active tasks
+openclaw tasks flow cancel <lookup>
 ```
 
-The Gateway creates a task record and begins execution. Independent tasks (`checkout` runs first; `test` and `build` run in parallel after `checkout`; `deploy` runs after both complete).
+| Command                           | Description                                   |
+| --------------------------------- | --------------------------------------------- |
+| `openclaw tasks flow list`        | Shows tracked flows with status and sync mode |
+| `openclaw tasks flow show <id>`   | Inspect one flow by flow id or lookup key     |
+| `openclaw tasks flow cancel <id>` | Cancel a running flow and its active tasks    |
 
-### Progress and inspection
+## How flows relate to tasks
 
-```bash
-# Check task status
-openclaw tasks list
+Flows coordinate tasks, not replace them. A single flow may drive multiple background tasks over its lifetime. Use `openclaw tasks` to inspect individual task records and `openclaw tasks flow` to inspect the orchestrating flow.
 
-# Tail live output
-openclaw tasks logs --id <task-id>
+## Related
 
-# Cancel a running task
-openclaw tasks cancel --id <task-id>
-```
+* [Background Tasks](/automation/tasks) — the detached work ledger that flows coordinate
+* [CLI: tasks](/cli/index#tasks) — CLI command reference for `openclaw tasks flow`
+* [Automation Overview](/automation) — all automation mechanisms at a glance
+* [Cron Jobs](/automation/cron-jobs) — scheduled jobs that may feed into flows
 
-### Wait and resume
 
-For tasks paused at a decision node, use:
-
-```bash
-openclaw tasks resume --id <task-id> --choice <option>
-```
-
-## Decision nodes
-
-Tasks can include interactive decision points. When a decision node is reached, execution pauses and the task enters `waiting` state. You can then:
-
-* Resume with a specific choice via CLI
-* Configure automatic decisions based on rules
-* Set a timeout to auto-cancel or skip
-
-```json
-{
-  "review": {
-    "type": "decision",
-    "prompt": "Should this PR be merged?",
-    "options": ["approve", "request-changes", "comment"],
-    "timeout": "24h"
-  }
-}
-```
-
-## Error handling
-
-When a task fails, by default all downstream tasks are cancelled. You can override this per dependency:
-
-```json
-{
-  "cleanup": {
-    "type": "tool",
-    "tool": "exec",
-    "params": { "command": "docker system prune -f" },
-    "depends": ["deploy"],
-    "required": false
-  }
-}
-```
-
-## Webhook integration
-
-Task completion can trigger webhooks:
-
-```json
-{
-  "onComplete": "https://your-server.com/webhook/task-complete",
-  "onFailure": "https://your-server.com/webhook/task-failed"
-}
-```
-
-## Session binding
-
-When a Task Flow run starts, it can be bound to a specific session:
-
-```bash
-openclaw tasks submit flow.json --session main
-```
-
-This lets the flow access workspace context, memory, and prior conversation state.
-
-## CLI reference
-
-| Command                       | Description                          |
-| ----------------------------- | ------------------------------------ |
-| `openclaw tasks submit <file>` | Submit a new task flow               |
-| `openclaw tasks list`         | List all tasks (running/complete/etc) |
-| `openclaw tasks logs --id X`  | Stream logs for a task               |
-| `openclaw tasks cancel --id X` | Cancel a running task                |
-| `openclaw tasks resume --id X` | Resume a waiting task                |
-| `openclaw tasks inspect --id X`| Show full task graph and state       |
+Built with [Mintlify](https://mintlify.com).
