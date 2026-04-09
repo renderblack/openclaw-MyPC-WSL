@@ -4,12 +4,18 @@
 
 ### 🔴 高优先级
 
-- [ ] **Claude Code 源码分析** (2026-04-05 新增)
+- [x] **Claude Code 源码分析** (2026-04-05 完成)
   - 描述：下载并分析 Claude Code 2.1.88 泄露源码
   - 存储位置：D:\ClaudeCode\
   - 分析维度：架构、Agent 实现、工具系统、OpenClaw 对比、技术亮点
   - 计划文档：`docs/Claude-Code源码分析计划.md`
-  - 状态：⏳ 待执行（等待下载源确认）
+  - 状态：✅ 完成（5个分析文档已生成）
+
+- [ ] **图片识别能力配置** (2026-04-07 新增)
+  - 描述：当前模型均为纯文本，不支持图片识别/理解
+  - 需求：支持识别用户发送的图片内容
+  - 方案：配置多模态模型（如 Claude 3.5 Sonnet/GPT-4V/清华多模态等）
+  - 状态：⏳ 待配置
 
 - [ ] **FFmpeg CLI 自动化测试**
   - 描述：测试 ffmpeg-cli.ps1 脚本的 7 种功能
@@ -74,6 +80,7 @@
 - [x] Claude Code 源码分析计划制定
 - [x] 模型切换回 M2.7-highspeed
 - [x] **OCR 能力配置完成** - Python 3.11.9 + PaddlePaddle GPU + PaddleOCR
+- [x] **Claude Code 源码分析** (5个分析文档，4756个源文件已分析)
 - [x] Chrome 浏览器自动化（已实现 via cli-anything skill）
 - [x] 集成 agency-agents 智能体集合 (162 个)
 - [x] NPM 镜像配置（npmmirror.com）

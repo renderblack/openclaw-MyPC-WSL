@@ -1,0 +1,107 @@
+{
+  "agents": {
+    "defaults": {
+      "workspace": "C:\\Users\\Administrator\\.openclaw\\workspace",
+      "compaction": {
+        "mode": "safeguard"
+      },
+      "model": {
+        "primary": "minimax-portal/MiniMax-M2.7",
+        "fallbacks": [
+          "minimax-portal/MiniMax-M2.7-highspeed"
+        ]
+      },
+      "imageModel": {
+        "primary": "minimax/MiniMax-VL-01"
+      },
+      "models": {
+        "minimax-portal/MiniMax-M2.7": {
+          "alias": "minimax-m2.7"
+        },
+        "minimax-portal/MiniMax-M2.7-highspeed": {
+          "alias": "minimax-m2.7-highspeed"
+        }
+      }
+    }
+  },
+  "auth": {
+    "profiles": {
+      "minimax-portal:default": {
+        "provider": "minimax-portal",
+        "mode": "oauth"
+      }
+    }
+  },
+  "channels": {
+    "qqbot": {
+      "enabled": true,
+      "allowFrom": [
+        "*"
+      ],
+      "appId": "1903763830",
+      "clientSecret": "siPzOhrpcEi2INLJ"
+    },
+    "openclaw-weixin": {
+      "channelConfigUpdatedAt": "2026-04-06T10:10:57.216Z"
+    }
+  },
+  "gateway": {
+    "mode": "local",
+    "auth": {
+      "mode": "token",
+      "token": "7edf9df528ecd2c447dfe049676508a952bc95c400f6d018"
+    }
+  },
+  "meta": {
+    "lastTouchedVersion": "2026.4.5",
+    "lastTouchedAt": "2026-04-09T01:12:00.000Z"
+  },
+  "models": {
+    "providers": {
+      "minimax-portal": {
+        "baseUrl": "https://api.minimaxi.com/anthropic",
+        "models": []
+      }
+    }
+  },
+  "plugins": {
+    "entries": {
+      "minimax": {
+        "enabled": true
+      },
+      "qqbot": {
+        "enabled": true
+      },
+      "openclaw-weixin": {
+        "enabled": true
+      }
+    },
+    "installs": {
+      "openclaw-weixin": {
+        "source": "npm",
+        "spec": "@tencent-weixin/openclaw-weixin@latest",
+        "installPath": "C:\\Users\\Administrator\\.openclaw\\extensions\\openclaw-weixin",
+        "version": "2.1.6",
+        "resolvedName": "@tencent-weixin/openclaw-weixin",
+        "resolvedVersion": "2.1.6",
+        "resolvedSpec": "@tencent-weixin/openclaw-weixin@2.1.6",
+        "integrity": "sha256-EEnSZBU+NysjEJ3ur7JHYnvy2q3pvHcfFOHZVV/jkUrUG0zQuOp2uYK2bs7Fi8We/z+FWVA+xewqu4mzDs7EUQ==",
+        "shasum": "c177c98f1c2ccd3fd83dd096c79287bc780f5b15",
+        "resolvedAt": "2026-04-05T06:57:49.286Z",
+        "installedAt": "2026-04-05T06:58:04.642Z"
+      }
+    }
+  },
+  "session": {
+    "dmScope": "per-channel-peer"
+  },
+  "tools": {
+    "profile": "coding"
+  },
+  "wizard": {
+    "lastRunAt": "2026-04-09T01:12:00.000Z",
+    "lastRunVersion": "2026.4.5",
+    "lastRunCommand": "configure",
+    "lastRunMode": "local"
+  }
+}

@@ -7,6 +7,29 @@ Skills define _how_ tools work. This file is for _your_ specifics — the stuff 
 > - All scripts are PowerShell (`.ps1`) or native Windows executables.
 > - Paths use Windows format (`C:\Users\...`).
 
+## ⚠️ PowerShell 编码问题警告（2026-04-09 重要教训）
+
+**问题现象**：
+- 含中文的 UTF-8 文件用 PowerShell `Get-Content` 读取显示乱码（�?）
+- `edit` 工具的 `oldText` 匹配失败，明明看到了正确内容却无法编辑
+- Git 仓库中所有历史版本都已是乱码（从首次提交就有问题）
+- OpenClaw 的 `read` 工具能正常读取，说明文件内容实际完好
+
+**根因**：PowerShell 7+ 默认编码行为与 UTF-8 文件不兼容，导致写入时编码错乱
+
+**正确做法**：
+1. **优先使用 OpenClaw 的 `read`/`write` 工具** 操作含中文的文本文件
+2. **禁止**用 PowerShell 直接覆盖含中文的 UTF-8 文件（如 `Set-Content` `Out-File` `>` 重定向）
+3. 涉及中文文件的编辑，必须用 `read` 工具读取 → `write` 工具写入
+4. 任何情况下都**不要**用 PowerShell 的 `[System.IO.File]::WriteAllText()` 或 `Out-File -Encoding utf8` 覆盖已损坏的文件（会固化错误）
+
+**代码模板**：PowerShell 读取文件时强制指定 UTF8：
+```powershell
+Get-Content "$path" -Raw -Encoding utf8
+```
+
+**教训来源**：2026-04-09，MEMORY.md 和所有 daily memory 文件损坏，Git 历史全部中招。
+
 ## 🛠️ 开发环境标准检查清单 (PowerShell Native)
 
 每次开发任务前，按以下五个阶段检查环境：
