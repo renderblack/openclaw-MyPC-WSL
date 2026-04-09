@@ -1,0 +1,11 @@
+# OpenClaw 本地数据
+.openclaw/
+backups/
+
+# 临时文件
+*.log
+*.tmp
+
+# OS 文件
+.DS_Store
+Thumbs.db
