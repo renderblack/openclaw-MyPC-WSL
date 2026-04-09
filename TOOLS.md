@@ -1,260 +1,66 @@
-# TOOLS.md - Local Notes (Windows Native Environment)
+# TOOLS.md - Local Notes (WSL2 Ubuntu)
 
-Skills define _how_ tools work. This file is for _your_ specifics — the stuff that's unique to your setup.
+## 系统环境
 
-> **⚠️ Environment Note**: This OpenClaw instance runs on **Windows 10 (Education Edition) + PowerShell** (Native).
-> - No WSL2 dependency.
-> - All scripts are PowerShell (`.ps1`) or native Windows executables.
-> - Paths use Windows format (`C:\Users\...`).
+- **宿主机:** Windows 10 + WSL2 Ubuntu
+- **Node:** v22.22.2
+- **OpenClaw 版本:** 2026.4.9
+- **安装方式:** npm 全局安装
 
-## ⚠️ PowerShell 编码问题警告（2026-04-09 重要教训）
+## Gateway 配置
 
-**问题现象**：
-- 含中文的 UTF-8 文件用 PowerShell `Get-Content` 读取显示乱码（�?）
-- `edit` 工具的 `oldText` 匹配失败，明明看到了正确内容却无法编辑
-- Git 仓库中所有历史版本都已是乱码（从首次提交就有问题）
-- OpenClaw 的 `read` 工具能正常读取，说明文件内容实际完好
+- **地址:** 127.0.0.1:18790 (WSL2 本地回环)
+- **模式:** local
+- **认证:** Token 模式
+- **日志:** /tmp/openclaw/openclaw-YYYY-MM-DD.log
 
-**根因**：PowerShell 7+ 默认编码行为与 UTF-8 文件不兼容，导致写入时编码错乱
+## 微信渠道
 
-**正确做法**：
-1. **优先使用 OpenClaw 的 `read`/`write` 工具** 操作含中文的文本文件
-2. **禁止**用 PowerShell 直接覆盖含中文的 UTF-8 文件（如 `Set-Content` `Out-File` `>` 重定向）
-3. 涉及中文文件的编辑，必须用 `read` 工具读取 → `write` 工具写入
-4. 任何情况下都**不要**用 PowerShell 的 `[System.IO.File]::WriteAllText()` 或 `Out-File -Encoding utf8` 覆盖已损坏的文件（会固化错误）
+- **插件:** @tencent-weixin/openclaw-weixin v2.1.7
+- **账号:** o9cq80xO-9exHj-UMC1xQUSNgK5g@im.wechat
+- **Base URL:** https://ilinkai.weixin.qq.com
 
-**代码模板**：PowerShell 读取文件时强制指定 UTF8：
-```powershell
-Get-Content "$path" -Raw -Encoding utf8
+## 重要备注
+
+- WSL2 Ubuntu 环境下，Gateway 默认绑定 127.0.0.1，外部网络无法直接访问
+- 如果需要外网访问微信 Webhook，需要配置 WSL2 端口转发或使用 Tailscale 等方案
+- Clash 代理端口: 7890（已开启局域网连接）
+
+## Gateway 重启方法
+
+WSL2 环境下，不要用 `openclaw gateway restart`（依赖 systemd，会失败），用：
+
+```bash
+openclaw gateway --force
 ```
 
-**教训来源**：2026-04-09，MEMORY.md 和所有 daily memory 文件损坏，Git 历史全部中招。
+这会自动 kill 旧进程并启动新的。
 
-## 🛠️ 开发环境标准检查清单 (PowerShell Native)
+## 模型
 
-每次开发任务前，按以下五个阶段检查环境：
+- **主模型:** MiniMax-M2.7（上下文 204800 tokens）
+- **备用:** MiniMax-M2.7-highspeed
 
-### 第一阶段：Gateway 和服务状态
-```powershell
-# 1. Gateway 状态
-openclaw gateway status
+## GitHub 仓库
 
-# 2. 完整诊断
+- **仓库:** https://github.com/renderblack/openclaw-MyPC-WSL
+- **Token:** 已配置（ghp_yGC4...）
+
+## 常用命令
+
+```bash
+# 查看 Gateway 状态
 openclaw status
+
+# 查看日志
+tail -f /tmp/openclaw/openclaw-$(date +%Y-%m-%d).log
+
+# 重启 Gateway（WSL2 专用）
+openclaw gateway --force
 ```
 
-### 第二阶段：系统资源
-```powershell
-# 3. 磁盘空间 (C 盘)
-$disk = Get-PSDrive -PSProvider FileSystem | Where-Object {$_.Root -eq "C:\"}
-$freeGB = [math]::Round($disk.Free / 1GB, 2)
-$usedGB = [math]::Round($disk.Used / 1GB, 2)
-Write-Host "C: $freeGB GB Free / $usedGB GB Used"
-if ($freeGB -lt 30) {
-    Write-Host "⚠️ Warning: C 盘空间不足 30 GB，建议清理！" -ForegroundColor Yellow
-}
+## 文件路径
 
-# 4. 内存
-Get-CimInstance Win32_OperatingSystem | Select-Object @{N='TotalGB';E={[math]::Round($_.TotalVisibleMemorySize/1MB,2)}}, @{N='FreeGB';E={[math]::Round($_.FreePhysicalMemory/1MB,2)}}
-
-# 5. 进程数
-Get-Process | Where-Object {$_.Name -like "*openclaw*"} | Measure-Object | Select-Object Count
-```
-
-### 第三阶段：网络连通性
-```powershell
-# 6. 代理检查 (通过 127.0.0.1:7890)
-Test-NetConnection -ComputerName 127.0.0.1 -Port 7890 -WarningAction SilentlyContinue | Select-Object TcpTestSucceeded
-
-# 7. Telegram 连接（检查 bot 是否可达）
-# 注意：如果 Telegram 未启用，此步骤可跳过
-# Invoke-RestMethod -Uri "https://api.telegram.org/bot<token>/getMe"
-```
-
-### 第四阶段：日志检查
-```powershell
-# 8. 当天日志
-$today = Get-Date -Format 'yyyy-MM-dd'
-$logPath = "$env:TEMP\openclaw\openclaw-$today.log"
-if (Test-Path $logPath) {
-    Get-Content $logPath -Tail 50
-} else {
-    Write-Host "No log file found at $logPath"
-}
-
-# 9. 错误统计
-if (Test-Path $logPath) {
-    $errors = (Get-Content $logPath -Tail 200 | Select-String "ERROR").Count
-    Write-Host "Error count in last 200 lines: $errors"
-}
-```
-
-### 第五阶段：技能状态
-```powershell
-# 10. 已安装技能
-openclaw skills list
-```
-
-### ⚠️ 异常判断标准
-
-| 异常现象 | 可能原因 | 处理方式 |
-|---------|---------|---------|
-| Gateway not responding | 服务未启动 | `openclaw gateway start` |
-| RPC probe failed | 配置文件错误 | 检查 `openclaw.json` |
-| Telegram polling stall | 网络波动 | 等待自动恢复或重启 |
-| 磁盘 > 90% | 日志过大 | 清理旧日志 (`Remove-Item ...`) |
-| 内存 < 500MB 可用 | 进程泄漏 | 重启 gateway |
-
----
-
-## Hardware (Real Configuration)
-
-- **CPU**: Intel Core i7-9700KF @ 3.60GHz (8 cores, 8 threads)
-- **RAM**: 32GB
-- **Hostname**: XIONG
-- **C Drive**: 25.7 GB free / 222.9 GB total
-- **D Drive**: 201.5 GB free / 962.2 GB total
-
-## Environment (Current Configuration)
-
-- **OS**: Windows 10 Education Edition (Build 19045, 64-bit)
-- **OpenClaw Home**: `C:\Users\Administrator\.openclaw`
-- **Workspace**: `C:\Users\Administrator\.openclaw\workspace`
-- **Proxy**: `127.0.0.1:7890` (Local proxy, e.g., Clash/Clash Meta)
-- **Model Provider**: MiniMax / DeepSeek (via custom-newapi / direct)
-- **Telegram Bot**: Configured (Token stored in `openclaw.json`)
-- **QQ Bot**: Enabled
-- **Chrome**: Installed at `C:\Program Files (x86)\Google\Chrome\Application\chrome.exe`
-
-## Safe Working Directories
-
-- `C:\Users\Administrator\.openclaw\workspace`
-- `C:\Users\Administrator\projects` (if exists)
-- `C:\Temp` (or `%TEMP%`)
-
-## Common Tools Available
-
-- `powershell` / `pwsh`
-- `curl` (PowerShell alias for `Invoke-WebRequest`)
-- `git`
-- `python` / `pip`
-- `node` / `npm`
-- `ffmpeg`
-- `jq` (via Chocolatey/Scoop or native PowerShell JSON parsing)
-
-## Notes
-
-- **JSON Parsing**: Prefer native PowerShell (`ConvertFrom-Json`) or `jq` if installed.
-- **File Operations**: Stay inside `workspace` unless explicitly requested.
-- **Commands**: Avoid destructive commands (`rm`, `del`) without confirmation.
-- **Scripts**: All automation scripts should be `.ps1` (PowerShell), not `.sh` (Bash).
-- **Path Format**: Use Windows paths (`C:\...`) or PowerShell variables (`$env:TEMP`).
-
-## Why Separate?
-
-Skills are shared. Your setup is yours. Keeping them apart means you can update skills without losing your notes, and share skills without leaking your infrastructure.
-
-## Skills 管理（2026-03-27 更新）
-
-OpenClaw 2026.3.24 新增 **Skills 一键安装** 功能，安装 Skill 时会自动检测并提示缺失的依赖。
-
-### 常用命令
-
-```powershell
-# 查看已安装的 Skills
-openclaw skills list
-
-# 查看所有可用 Skills（包括未安装的）
-openclaw skills catalog
-
-# 查看某个 Skill 的详细信息（包含依赖说明）
-openclaw skills info <skill-name>
-
-# 安装 Skill（会自动检测并提示缺失依赖）
-openclaw skills install <skill-name>
-
-# 更新已安装的 Skill
-openclaw skills update <skill-name>
-
-# 卸载 Skill
-openclaw skills uninstall <skill-name>
-```
-
-### 已安装的 Skills
-
-| Skill | 说明 |
-|-------|------|
-| cli-anything | 浏览器控制（CLI-Anything + Selenium） |
-| himalaya | 邮件管理（IMAP/SMTP） |
-| openai-whisper-api | OpenAI 语音转文字 |
-| weather | 天气查询 |
-| summarize | URL/文件摘要 |
-| find-skills | 查找新 Skill |
-
-### 常用 Skills 推荐
-
-- `gh-issues` - GitHub Issues 管理（需配置 GitHub Token）
-- `blogwatcher` - 博客/RSS 监控
-- `openhue` - 飞利浦 Hue 灯光控制
-- `sonoscli` - Sonos 音箱控制
-- `tmux` - (Not applicable on Windows Native, use Windows Terminal tabs instead)
-
-### Skill 安装示例
-
-```powershell
-# 安装 GitHub Issues Skill（会提示输入 GitHub Token）
-openclaw skills install gh-issues
-
-# 安装后查看依赖是否满足
-openclaw skills info gh-issues
-```
-
-### 自定义 Skill 位置
-
-- 用户安装的 Skills：`C:\Users\Administrator\.openclaw\skills\`
-- 系统内置 Skills：`C:\Users\Administrator\AppData\Roaming\npm\node_modules\openclaw\skills\`
-
-## 本地文件搜索工具 (2026-04-06)
-
-### 工具链
-| 工具 | 版本 | 路径 | 用途 |
-|------|------|------|------|
-| ripgrep | 14.1.0 | `rg` | 内容全文搜索 |
-| Everything | 1.4.11032 | `C:\Program Files\Everything\Everything.exe` | 文件名索引 |
-| es.exe | 1.1.0.30 | `C:\ProgramData\chocolatey\lib\es\tools\es.exe` | CLI调用接口 |
-
-### 混合搜索脚本
-**位置**: `scripts/hybrid-search.ps1`
-
-**用法**:
-```powershell
-# 搜索内容和文件名
-.\hybrid-search.ps1 -Keyword "关键词" -Type all
-
-# 只搜内容
-.\hybrid-search.ps1 -Keyword "关键词" -Type content
-
-# 只搜文件名
-.\hybrid-search.ps1 -Keyword "关键词" -Type name
-
-# 指定目录和扩展名
-.\hybrid-search.ps1 -Keyword "关键词" -Dir "D:\项目" -Ext "md"
-```
-
-**直接调用命令**:
-```powershell
-# ripgrep 内容搜索
-rg "关键词" --max-count 20 --json "C:\path\to\dir"
-
-# es.exe 文件名搜索 (需要用cmd/c包装)
-cmd /c "es.exe 关键词 -path C:\path -max-results 20"
-```
-
-### 经验总结
-1. **es.exe IPC问题**: PowerShell直接调用es.exe会挂起，必须用`cmd /c`包装
-2. **编码问题**: PowerShell脚本避免中文注释，改用英文
-3. **速度**: ripgrep毫秒级，es秒级
-
----
-
-Add whatever helps you do your job. This is your cheat sheet.
+- OpenClaw 配置: ~/.openclaw/
+- 工作区: ~/.openclaw/workspace/
+- 微信凭证: ~/.openclaw/openclaw-weixin/accounts/
