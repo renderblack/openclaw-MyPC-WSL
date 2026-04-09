@@ -112,18 +112,29 @@
 
 ## 📚 3D图像重建学习板块
 
-**路径**：`learn/3d-reconstruction/`
+**路径**：`learn/3d-reconstruction/README.md`
 
-**内容**：
-- 技术路线图（NeRF → 3DGS → EDGS）
-- GitHub 资源汇总
-- 学习笔记和计划
+**计划周期**：12周系统性学习
 
-**GitHub 热门仓库**：
+### 学习阶段
+| 阶段 | 周数 | 内容 | 状态 |
+|------|------|------|------|
+| 理论基础 | 1-3周 | NeRF → 3DGS 原理 | ⬜ |
+| 工具掌握 | 4-6周 | 环境搭建 + gaustudio | ⬜ |
+| 进阶应用 | 7-9周 | SuGaR + 编辑器 | ⬜ |
+| 前沿探索 | 10-12周 | 最新论文 + 项目实战 | ⬜ |
+
+### Week 1 任务（NeRF入门）
+- [ ] 精读 NeRF 论文
+- [ ] 理解 MLP 隐式表示
+- [ ] 理解体素渲染原理
+
+### 工具链
+- gaustudio（训练框架）
+- supersplat（编辑器）
+- COLMAP（数据预处理）
+
+### GitHub 资源
 - awesome-3D-gaussian-splatting ⭐8488
 - supersplat ⭐4107
 - gaustudio ⭐1735
-
-**下一步**：
-- 精读 3DGS 论文
-- 运行 gaustudio Demo
