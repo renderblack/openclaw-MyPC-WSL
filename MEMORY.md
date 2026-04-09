@@ -97,3 +97,24 @@
 - 不同环境（Windows / WSL2）应该用**不同的仓库**
 - 建新仓库前先确认 remote 是否对应正确的环境
 - 或者新建仓库时先 `rm -rf .git` 清理干净再 init
+
+---
+
+## OCR 文字识别
+
+**工具**：Tesseract OCR（Windows 版）
+- 路径：`C:\Program Files\Tesseract-OCR\tesseract.exe`
+- 中文模型：`chi_sim.traineddata`
+- 依赖：GhostScript（已安装，用于 PDF 转图片）
+
+**用途**：
+- 识别 PDF 扫描件
+- 识别图片中的文字
+- 合同、文档关键信息提取
+
+**工作流程**：
+1. `gs` → PDF 转 JPG 图片
+2. `tesseract` → OCR 识别中文
+3. 输出纯文本
+
+**验证**：成功识别智慧梁场演示动画制作合同（93240元）
