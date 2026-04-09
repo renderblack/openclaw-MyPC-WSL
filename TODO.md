@@ -42,6 +42,17 @@
 | **视频帧提取** | 🟢 低 | `video-frames`，分析视频内容 |
 | **Tailscale 远程访问** | 🟡 中 | 外网安全访问 Gateway |
 
+### 🦐 养虾经验可试试
+
+| 技巧 | 优先级 | 说明 |
+|------|--------|------|
+| **第二大脑** | 🟡 中 | 笔记像发短信，找资料像搜索，参考 `awesome-openclaw-usecases` |
+| **MCP 服务器** | 🟡 中 | Apify MCP 抓取实时数据（新闻/房产等），参考 `Awesome-MCP-Servers` |
+| **Perplexity 搜索** | 🟢 低 | 比 web_search 更强，需 API Key |
+| **ClawdHub CLI** | 🟢 低 | 一键安装 GitHub 技能：`npm i -g clawdhub` |
+| **Dashboard 仪表板** | 🟢 低 | `openclaw dashboard` 可视化管理 |
+| **安全审计** | 🟢 低 | `openclaw security audit --deep` 定期检查 |
+
 ---
 
 ## 系统配置
