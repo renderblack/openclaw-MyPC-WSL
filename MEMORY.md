@@ -83,3 +83,17 @@
 ### Git 操作（2026-04-09）
 - Token 认证：`https://ghp_xxx@github.com/...`
 - 远程有内容时先 pull --rebase 再 push
+
+### ⚠️ Git 仓库环境混淆教训（2026-04-09）
+
+**问题**：WSL2 workspace 绑定了 Windows 的 Git 仓库，导致 Windows 配置文件覆盖了 WSL2 配置。
+
+**原因**：
+1. WSL2 workspace 最初绑定了 `openclaw-MyPC`（Windows 仓库）
+2. 执行 `git reset --hard origin/master` 把 Windows 文件全部拉下来
+3. 后来建了新仓库 `openclaw-MyPC-WSL`，但 Windows 文件已存在于历史
+
+**教训**：
+- 不同环境（Windows / WSL2）应该用**不同的仓库**
+- 建新仓库前先确认 remote 是否对应正确的环境
+- 或者新建仓库时先 `rm -rf .git` 清理干净再 init
