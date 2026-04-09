@@ -13,6 +13,13 @@
 | **文件搜索** | ✅ 已配置 | `hybrid-search.ps1`，Everything + ripgrep |
 | **系统诊断** | ✅ 已配置 | `healthcheck` / `node-connect` skill |
 | **记忆系统** | ✅ 已配置 | `memory/` 日志 + MEMORY.md 长期记忆 |
+| **Summarize** | ✅ 已配置 | 内容总结技能 |
+| **Skill-Vetter** | ✅ 已配置 | 安全审计，安装前检查恶意代码 |
+| **Agent Browser** | ✅ 已配置 | `agent-browser-clawdbot`，浏览器自动化 |
+| **Tavily 搜索** | ✅ 已配置 | `openclaw-tavily-search`，AI专用搜索引擎 |
+| **Find-Skills** | ✅ 已配置 | `find-skills-skill`，自动发现相关技能 |
+| **Proactive Agent** | ✅ 已配置 | 主动提醒，变被动为主动 |
+| **Humanizer** | ✅ 已配置 | 输出更人性化 |
 
 ### 🔧 媒体生成（内置工具）
 
@@ -48,8 +55,8 @@
 |------|--------|------|
 | **第二大脑** | 🟡 中 | 笔记像发短信，找资料像搜索，参考 `awesome-openclaw-usecases` |
 | **MCP 服务器** | 🟡 中 | Apify MCP 抓取实时数据（新闻/房产等），参考 `Awesome-MCP-Servers` |
+| **Self-Improving** | 🟡 中 | 让龙虾记住错误、持续进化（类似 `.learnings/` 系统） |
 | **Perplexity 搜索** | 🟢 低 | 比 web_search 更强，需 API Key |
-| **ClawdHub CLI** | 🟢 低 | 一键安装 GitHub 技能：`npm i -g clawdhub` |
 | **Dashboard 仪表板** | 🟢 低 | `openclaw dashboard` 可视化管理 |
 | **安全审计** | 🟢 低 | `openclaw security audit --deep` 定期检查 |
 
@@ -64,7 +71,6 @@
 
 ### 🟢 已省略（不需要）
 
-- [ ] **安全审计** — 评估后认为当前风险可接受，暂不执行
 - [ ] **图片识别能力** — 评估后认为当前纯文本模型足够，暂不配置
 
 ### 🟡 中优先级
@@ -89,6 +95,8 @@
 - [x] ClawLibrary 部署 + 开机自启
 - [x] OCR 能力配置（Tesseract Windows 版）
 - [x] 文件搜索能力配置（hybrid-search.ps1）
+- [x] ClawdHub CLI 安装 + 登录
+- [x] 养虾经验九大必备技能安装（Skill-Vetter、Agent Browser、Tavily、Find-Skills、Proactive Agent、Humanizer）
 
 ---
 
@@ -98,3 +106,4 @@
 - OpenClaw：npm 全局安装 v2026.4.9
 - Gateway：127.0.0.1:18790（本地回环）
 - 微信插件：openclaw-weixin v2.1.7，已连接
+- 已安装技能：160+
