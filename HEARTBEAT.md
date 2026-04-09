@@ -158,3 +158,18 @@ bash ~/.openclaw/workspace/scripts/promote-learnings.sh
 - 异常情况才主动通知，正常情况回复 HEARTBEAT_OK
 - 深夜（23:00-08:00）不主动打扰
 - **主动推送由 cron 驱动，即使主会话不活跃也会发送**
+
+---
+
+## 📚 3DGS 文章订阅（每两天）
+
+**触发频率**：每 2 天检查一次
+
+**执行内容**：
+1. 搜索关键词：`3D gaussian splatting OR 3DGS OR 高斯泼溅`
+2. 发现新文章后主动推送到微信
+3. 记录到 `learn/3d-reconstruction/articles-tracker.md`
+
+**注意**：
+- 心跳触发时检查是否到了检查时间
+- 最近推送过文章则跳过，避免重复打扰
