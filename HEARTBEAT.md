@@ -3,103 +3,34 @@
 ## 概述
 Heartbeat 是 OpenClaw 的周期性检查机制。每次心跳触发时，会执行以下检查任务。
 
-## 主动推送机制（Proactive Agent）
-
-**每2小时自动执行一次 proactive_check.sh，会主动发 Telegram 消息汇报状态。**
-
-内容包括：
-- 网关运行状态
-- 磁盘/内存使用
-- 技能安装进度
-
 ---
 
 ## 检查时间安排
 
 | 时间 | 检查类型 | 说明 |
 |------|---------|------|
-| 早上 8-9点 | 系统状态 | 网关、磁盘、内存 |
-| 下午 14-15点 | 上下文消耗 | 判断是否需要开新会话 |
-| 每2小时 | 主动推送 | proactive_check.sh 自动 Telegram 通知 |
-| 傍晚 18-19点 | 工作记录 | 更新 memory/YYYY-MM-DD.md |
-| **每周一次（建议周末）** | **学习晋升** | 检查 `.learnings/` 并晋升重要内容到 `MEMORY.md` |
+| 每2天 | 3DGS文章搜索 | 搜索并推送到微信 |
+
+**说明**：以下任务已迁移到 cron 执行，更精确：
+- 早上系统状态检查 → cron（周一至周五 08:00）
+- 下午上下文消耗检查 → cron（周一至周五 14:00）
+- 傍晚工作记录更新 → cron（周一至周五 18:00）
+- 每周学习晋升检查 → cron（周日 20:00）
 
 ---
 
-## 🧠 学习记录检查与晋升（每周）
+## 📚 3DGS 文章订阅（每两天）
 
-**触发时机**：建议周末或长时间未检查时
+**触发频率**：每 2 天检查一次
 
-**检查内容**：
-1. **检查 `.learnings/ERRORS.md`**：
-   - 是否有重复出现的错误？
-   - 是否有需要固化的解决方案？
-2. **检查 `.learnings/LEARNINGS.md`**：
-   - 是否有通用性强的 `best_practice`？
-   - 是否有需要晋升到 `MEMORY.md` 的 `insight`？
-   - 是否有需要更新 `TOOLS.md` 的 `knowledge_gap`？
-3. **检查 `.learnings/FEATURE_REQUESTS.md`**：
-   - 是否有已实现但未标记的需求？
-   - 是否有高优先级待办？
+**执行内容**：
+1. 搜索关键词：`3D gaussian splatting OR 3DGS OR 高斯泼溅`
+2. 发现新文章后主动推送到微信
+3. 记录到 `learn/3d-reconstruction/articles-tracker.md`
 
-**晋升规则**：
-- **通用性强**（适用于所有项目） → 晋升到 `MEMORY.md`
-- **工作流优化** → 晋升到 `AGENTS.md`
-- **工具使用技巧** → 晋升到 `TOOLS.md`
-- **项目特定** → 保留在 `.learnings/` 或晋升到项目级 `AGENTS.md`
-
-**执行脚本**：
-```bash
-# 手动触发晋升
-bash ~/.openclaw/workspace/scripts/promote-learnings.sh
-```
-
----
-
-## 主动推送消息格式
-
-```
-🔔 皮皮虾主动检查 HH:MM
-
-📊 系统状态:
-• 网关: ✅/❌
-• 磁盘: XX% 已用
-• 内存: XX GB 可用
-
-📦 技能状态:
-• morning-email-rollup: ✅/⏳
-• reddit: ✅/⏳
-
-[其他重要事件]
-```
-
-**注意：** 推送完检查结果后，必须同步更新 MEMORY.md 中的硬件配置数据。
-
----
-
-## 状态检查后同步规则（强制）
-
-每次执行状态检查后（主动推送、heartbeat 检查等），必须同步更新 memory：
-- **C盘空间** → 更新 MEMORY.md 硬件配置
-- **内存** → 更新 MEMORY.md 硬件配置
-- **磁盘状态** → 更新 MEMORY.md 硬件配置
-
-**禁止：** 把旧数据当现实用，必须先跑命令再引用。
-
----
-
-## 上下文检查（下午）
-
-超过 70% 时建议开新会话：
-
-```
-## 📊 下午上下文检查
-
-| 项目 | 状态 |
-|------|------|
-| 上下文消耗 | XX% / 200k |
-| 建议 | ✅ 正常 / ⚠️ 建议开新会话 |
-```
+**注意**：
+- 心跳触发时检查是否到了检查时间
+- 最近推送过文章则跳过，避免重复打扰
 
 ---
 
@@ -110,9 +41,6 @@ bash ~/.openclaw/workspace/scripts/promote-learnings.sh
 ```json
 {
   "lastChecks": {
-    "morning": null,
-    "afternoon": null,
-    "evening": null,
     "proactive": null
   }
 }
@@ -157,19 +85,3 @@ bash ~/.openclaw/workspace/scripts/promote-learnings.sh
 - 检查要简洁，不要输出太多内容
 - 异常情况才主动通知，正常情况回复 HEARTBEAT_OK
 - 深夜（23:00-08:00）不主动打扰
-- **主动推送由 cron 驱动，即使主会话不活跃也会发送**
-
----
-
-## 📚 3DGS 文章订阅（每两天）
-
-**触发频率**：每 2 天检查一次
-
-**执行内容**：
-1. 搜索关键词：`3D gaussian splatting OR 3DGS OR 高斯泼溅`
-2. 发现新文章后主动推送到微信
-3. 记录到 `learn/3d-reconstruction/articles-tracker.md`
-
-**注意**：
-- 心跳触发时检查是否到了检查时间
-- 最近推送过文章则跳过，避免重复打扰
