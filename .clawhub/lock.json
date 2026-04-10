@@ -4,6 +4,30 @@
     "cli-anything": {
       "version": "0.1.0",
       "installedAt": 1775279190294
+    },
+    "skill-vetter": {
+      "version": "1.0.0",
+      "installedAt": 1775771200314
+    },
+    "agent-browser-clawdbot": {
+      "version": "0.1.0",
+      "installedAt": 1775771237319
+    },
+    "openclaw-tavily-search": {
+      "version": "0.1.0",
+      "installedAt": 1775771270589
+    },
+    "find-skills-skill": {
+      "version": "1.0.0",
+      "installedAt": 1775771313855
+    },
+    "proactive-agent": {
+      "version": "3.1.0",
+      "installedAt": 1775771327226
+    },
+    "humanizer": {
+      "version": "1.0.0",
+      "installedAt": 1775771339194
     }
   }
 }
