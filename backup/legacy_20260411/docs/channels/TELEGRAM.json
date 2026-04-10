@@ -1,0 +1,56 @@
+{
+  "title": "OpenClaw Telegram Channel",
+  "version": "2026-04-10",
+  "source_zh": "openclawx.cloud/zh/channels/telegram",
+  "source_en": "openclawx.cloud/en/channels/telegram",
+  "status": "production-ready via grammY (bot DMs + groups)",
+  "quick_setup": [
+    "在 @BotFather 创建机器人，获取 botToken",
+    "配置 botToken 和 dmPolicy",
+    "启动网关 openclaw gateway",
+    "批准配对 openclaw pairing list/approve"
+  ],
+  "token_config": {
+    "config_precedence": "配置值 > 环境变量(TELEGRAM_BOT_TOKEN)",
+    "tokenFile": "支持从文件路径读取令牌",
+    "note": "Telegram不使用 openclaw channels login"
+  },
+  "runtime_behavior": [
+    "Telegram由网关进程拥有",
+    "路由是确定性的：入站回复返回给Telegram",
+    "群组会话按群组ID隔离，论坛话题附加:topic:",
+    "私聊消息可携带message_thread_id",
+    "长轮询使用grammY runner"
+  ],
+  "access_control": {
+    "dm_policy": "pairing|allowlist|open|disabled",
+    "group_policy": "open|allowlist|disabled",
+    "allowFrom": "数字Telegram用户ID（非@username）",
+    "requireMention": "群组中是否需要@机器人"
+  },
+  "streaming_options": {
+    "off": "禁用流式",
+    "partial": "实时流预览（默认）",
+    "block": "旧版预览模式",
+    "progress": "映射为partial"
+  },
+  "webhook_mode": {
+    "enable": "需要webhookUrl + webhookSecret",
+    "path": "默认 /telegram-webhook",
+    "host": "默认 127.0.0.1",
+    "port": "默认 8787"
+  },
+  "inline_buttons": {
+    "options": "off|dm|group|all|allowlist",
+    "default": "allowlist"
+  },
+  "high_signal_fields": [
+    "enabled, botToken, tokenFile, accounts.*",
+    "dmPolicy, allowFrom, groupPolicy, groupAllowFrom, groups, groups.*.topics.*",
+    "commands.native, commands.nativeSkills, customCommands",
+    "replyToMode, streaming, textChunkLimit, chunkMode, linkPreview",
+    "mediaMaxMb, timeoutSeconds, retry, network.*, proxy",
+    "webhookUrl, webhookSecret, webhookPath, webhookHost",
+    "capabilities.inlineButtons, actions.*, reactionNotifications, reactionLevel"
+  ]
+}

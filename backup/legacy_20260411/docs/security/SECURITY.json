@@ -1,0 +1,81 @@
+{
+  "title": "OpenClaw Security and Sandboxing",
+  "version": "2026-04-10",
+  "source": "openclawx.cloud/zh/gateway/security",
+  "trust_model": "personal_assistant",
+  "description": "个人助理信任模型：单操作员边界，非多租户敌对隔离",
+  "key_principles": [
+    "身份优先：决定谁可以与机器人对话（配对/允许列表/显式开放）",
+    "范围其次：决定机器人被允许在哪里行动（群组允许列表+提及门控、工具、沙箱、设备权限）",
+    "模型最后：假设模型可以被操纵，设计使操纵具有有限的爆炸半径"
+  ],
+  "dm_policy": {
+    "pairing": "默认：未知发送者收到配对码，机器人忽略其消息直到批准，代码1小时后过期",
+    "allowlist": "未知发送者被阻止",
+    "open": "允许任何人发私信（需 allowFrom 包含 *）",
+    "disabled": "完全忽略入站私信"
+  },
+  "dm_scope_options": {
+    "main": "默认：所有私信共享主会话以实现连续性",
+    "per_peer": "按发送者 ID 跨频道隔离",
+    "per_channel_peer": "按频道+发送者隔离（推荐用于多用户收件箱）",
+    "per_account_channel_peer": "按账户+频道+发送者隔离（推荐用于多账户收件箱）"
+  },
+  "session_isolation": {
+    "warning": "如果代理可接收多用户私信，应强烈考虑启用安全私信模式，否则所有用户共享相同对话上下文",
+    "example": "Alice 向代理发送私人医疗预约，Bob 问'我们之前聊了什么？'，由于共享会话，模型可能用 Alice 的上下文回答 Bob"
+  },
+  "sandboxing": {
+    "description": "两个互补方案：1) Docker 运行完整网关（容器边界）2) 工具沙箱（网关主机+Docker隔离工具）",
+    "modes": ["hybrid", "hot", "restart", "off"],
+    "default": "hybrid（安全修改立即热应用，需重启的修改自动触发重启）"
+  },
+  "hardened_baseline_config": {
+    "gateway": {"mode": "local", "bind": "loopback", "auth": {"mode": "token", "token": "replace-with-long-random-token"}},
+    "session": {"dmScope": "per-channel-peer"},
+    "tools": {"profile": "messaging", "deny": ["group:automation", "group:runtime", "group:fs", "sessions_spawn", "sessions_send"], "fs": {"workspaceOnly": true}, "exec": {"security": "deny", "ask": "always"}, "elevated": {"enabled": false}},
+    "channels": {"whatsapp": {"dmPolicy": "pairing", "groups": {"*": {"requireMention": true}}}}
+  },
+  "gateway_bind_modes": {
+    "loopback": "仅本地访问（默认，推荐）",
+    "tailnet": "Tailscale 网络访问",
+    "lan": "局域网访问",
+    "public": "公共互联网（危险，需配合强认证）"
+  },
+  "prompt_injection_mitigation": [
+    "保持入站私信锁定（配对/允许列表）",
+    "在群组中优先使用提及门控，避免在公共房间使用始终在线机器人",
+    "默认将链接、附件和粘贴的指令视为敌对",
+    "在沙箱中运行敏感工具执行，将密钥排除在代理可访问的文件系统之外",
+    "将高风险工具（exec、browser、web_fetch、web_search）限制在受信任的代理或显式允许列表",
+    "为工具启用代理选择现代、最新一代、指令强化的模型"
+  ],
+  "audit_checklist": [
+    "入站访问：陌生人能否触发机器人？",
+    "工具爆炸半径：提示注入是否会转变为 shell/file/network 操作？",
+    "网络暴露：网关绑定/认证、Tailscale Funnel、弱/短认证令牌",
+    "浏览器控制暴露：远程节点、中继端口、远程 CDP 端点",
+    "本地磁盘卫生：权限、符号链接、配置包含、'同步文件夹'路径",
+    "插件：扩展存在但没有明确的允许列表",
+    "策略漂移/配置错误"
+  ],
+  "security_audit_command": "openclaw security audit",
+  "security_audit_deep_command": "openclaw security audit --deep",
+  "security_audit_fix_command": "openclaw security audit --fix",
+  "credential_storage_map": {
+    "whatsapp": "~/.openclaw/credentials/whatsapp/<account>/creds.json",
+    "telegram": "配置/环境变量或 channels.telegram.tokenFile",
+    "discord": "配置/环境变量或 SecretRef",
+    "slack": "配置/环境变量 channels.slack.*",
+    "pairing_allowlist": "~/.openclaw/credentials/-allowFrom.json（默认账户）",
+    "model_auth": "~/.openclaw/agents/<agentId>/agent/auth-profiles.json",
+    "secrets": "~/.openclaw/secrets.json（可选）"
+  },
+  "dangerous_flags": [
+    "gateway.controlUi.allowInsecureAuth=true",
+    "gateway.controlUi.dangerouslyAllowHostHeaderOriginFallback=true",
+    "gateway.controlUi.dangerouslyDisableDeviceAuth=true",
+    "hooks.gmail.allowUnsafeExternalContent=true",
+    "tools.exec.applyPatch.workspaceOnly=false"
+  ]
+}

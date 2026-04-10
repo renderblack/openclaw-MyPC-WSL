@@ -1,0 +1,83 @@
+{
+  "title": "OpenClaw MiniMax Provider",
+  "version": "2026-04-10",
+  "source": "openclawx.cloud/en/providers/minimax",
+  "model_family": "MiniMax M2/M2.5 model family",
+  "current_model": "MiniMax M2.5 (December 23, 2025)",
+  "m2_5_improvements": [
+    "更强多语言编码 (Rust, Java, Go, C++, Kotlin, Objective-C, TS/JS)",
+    "更好 web/app 开发输出质量 (含原生移动端)",
+    "改进办公风格工作流复合指令处理",
+    "更简洁响应，更低 token 消耗，更快迭代循环",
+    "更强工具/agent 框架兼容性和上下文管理",
+    "更高质量对话和技术写作输出"
+  ],
+  "model_variants": {
+    "MiniMax-M2.5": "标准版",
+    "MiniMax-M2.5-highspeed": "官方快速版本，input cost 相同，output cost 更高",
+    "MiniMax-M2.5-Lightning": "遗留版本，建议使用 highspeed"
+  },
+  "setup_options": {
+    "minimax_oauth": {
+      "recommended": true,
+      "best_for": "通过 OAuth 快速设置 MiniMax Coding Plan，无需 API key",
+      "commands": [
+        "openclaw plugins enable minimax-portal-auth",
+        "openclaw gateway restart",
+        "openclaw onboard --auth-choice minimax-portal"
+      ],
+      "endpoints": {
+        "global": "api.minimax.io (国际用户)",
+        "cn": "api.minimaxi.com (中国用户)"
+      }
+    },
+    "api_key": {
+      "best_for": "托管 MiniMax 与 Anthropic 兼容 API",
+      "config": {
+        "env": {"MINIMAX_API_KEY": "sk-..."},
+        "agents": {"defaults": {"model": {"primary": "minimax/MiniMax-M2.5"}}},
+        "models": {
+          "mode": "merge",
+          "providers": {
+            "minimax": {
+              "baseUrl": "https://api.minimax.io/anthropic",
+              "apiKey": "${MINIMAX_API_KEY}",
+              "api": "anthropic-messages",
+              "models": [
+                {"id": "MiniMax-M2.5", "name": "MiniMax M2.5", "reasoning": true, "input": ["text"], "cost": {"input": 0.3, "output": 1.2, "cacheRead": 0.03, "cacheWrite": 0.12}, "contextWindow": 200000, "maxTokens": 8192},
+                {"id": "MiniMax-M2.5-highspeed", "name": "MiniMax M2.5 Highspeed", "reasoning": true, "input": ["text"], "cost": {"input": 0.3, "output": 1.2, "cacheRead": 0.03, "cacheWrite": 0.12}, "contextWindow": 200000, "maxTokens": 8192}
+              ]
+            }
+          }
+        }
+      }
+    },
+    "local_lm_studio": {
+      "best_for": "强大硬件上本地推理",
+      "config": {
+        "agents": {"defaults": {"model": {"primary": "lmstudio/minimax-m2.5-gs32"}}},
+        "models": {
+          "mode": "merge",
+          "providers": {
+            "lmstudio": {
+              "baseUrl": "http://127.0.0.1:1234/v1",
+              "apiKey": "lmstudio",
+              "api": "openai-responses",
+              "models": [{"id": "minimax-m2.5-gs32", "name": "MiniMax M2.5 GS32", "reasoning": false, "contextWindow": 196608, "maxTokens": 8192}]
+            }
+          }
+        }
+      }
+    }
+  },
+  "configuration_options": {
+    "baseUrl": "https://api.minimax.io/anthropic (推荐 Anthropic 兼容)",
+    "api": "anthropic-messages (推荐)",
+    "apiKey": "MINIMAX_API_KEY 环境变量",
+    "models": "定义 id, name, reasoning, contextWindow, maxTokens, cost"
+  },
+  "troubleshooting": {
+    "unknown_model": "通常因为 MiniMax provider 未配置（无 provider entry 且无 MiniMax auth profile/env key），确保设置了 MINIMAX_API_KEY 或添加 models.providers.minimax block，模型 id 区分大小写"
+  },
+  "referral_link": "https://platform.minimax.io/subscribe/coding-plan?code=DbXJTRClnb&source=link (10% 折扣)"
+}

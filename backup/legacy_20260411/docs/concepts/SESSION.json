@@ -1,0 +1,77 @@
+{
+  "title": "OpenClaw Session Management",
+  "version": "2026-04-10",
+  "source_zh": "openclawx.cloud/zh/concepts/session",
+  "source_en": "openclawx.cloud/en/concepts/session",
+  "dm_scope_options": {
+    "main": {"default": true, "description": "所有私信共享主会话以实现连续性"},
+    "per_peer": "按发送者 ID 跨频道隔离"},
+    "per_channel_peer": "按频道+发送者隔离（推荐用于多用户收件箱）"},
+    "per_account_channel_peer": "按账户+频道+发送者隔离（推荐用于多账户收件箱）"}
+  },
+  "session_key_mapping": {
+    "main": "agent:<agentId>: (跨设备/频道的连续性)",
+    "per_peer": "agent:<agentId>:dm:<senderId>",
+    "per_channel_peer": "agent:<agentId>:<channelId>:dm:<senderId>",
+    "per_account_channel_peer": "agent:<agentId>:<accountId>:<channelId>:dm:<senderId>",
+    "group": "agent:<agentId>:<channelId>:group:",
+    "channel": "agent:<agentId>:<channelId>:channel:",
+    "telegram_topic": "agent:<agentId>:<channelId>:group:<groupId>:topic:<topicId>",
+    "cron": "cron:<jobId>",
+    "webhook": "hook:<hookId>",
+    "node": "node-<nodeId>"
+  },
+  "storage": {
+    "store_file": "~/.openclaw/agents/<agentId>/sessions/sessions.json",
+    "transcript_file": "~/.openclaw/agents/<agentId>/sessions/<sessionKey>.jsonl",
+    "telegram_topics": ".../<sessionKey>-topic-<topicId>.jsonl"
+  },
+  "maintenance_defaults": {
+    "mode": "warn",
+    "pruneAfter": "30d",
+    "maxEntries": 500,
+    "rotateBytes": "10mb",
+    "resetArchiveRetention": "30d",
+    "maxDiskBytes": "未设置（禁用）",
+    "highWaterBytes": "默认为 maxDiskBytes 的 80%"
+  },
+  "maintenance_modes": {
+    "warn": "报告哪些内容将被驱逐，但不修改条目/记录文件",
+    "enforce": "按顺序应用清理：1) 清理早于 pruneAfter 的陈旧条目 2) 将条目数量限制在 maxEntries 以内 3) 为已移除且不再被引用的条目归档记录文件 4) 根据保留策略清理旧的归档文件 5) 当 sessions.json 超过 rotateBytes 时进行轮换 6) 如果设置了 maxDiskBytes 则强制执行磁盘预算"
+  },
+  "lifecycle": {
+    "daily_reset": {"default": "网关主机本地时间凌晨 4:00", "description": "会话的最后更新时间早于最近一次每日重置时间即视为陈旧"},
+    "idle_reset": {"description": "idleMinutes 添加一个滑动空闲窗口，同时配置时先到期的生效"},
+    "reset_triggers": ["/new", "/reset", "resetTriggers 中的任何额外内容"],
+    "per_type_override": "resetByType 允许覆盖 direct、group 和 thread 会话的策略",
+    "per_channel_override": "resetByChannel 覆盖某个频道的重置策略，优先级高于 reset/resetByType",
+    "isolated_cron": "每次运行总是生成一个新的 sessionId（不进行空闲重用）"
+  },
+  "send_policy": {
+    "description": "阻止特定会话类型的消息传递，而无需列出单个 ID",
+    "example": {"action": "deny", "match": {"channel": "discord", "chatType": "group"}}
+  },
+  "runtime_overrides": {
+    "/send on": "允许此会话发送",
+    "/send off": "拒绝此会话发送",
+    "/send inherit": "清除覆盖并使用配置规则"
+  },
+  "security_dm_mode": {
+    "recommendation": "如果代理可接收来自多个用户的私信，应强烈考虑启用",
+    "warning": "默认设置下所有用户共享相同对话上下文，可能导致私人信息在用户间泄露",
+    "fix": "设置 dmScope: per-channel-peer 以按用户隔离会话"
+  },
+  "inspect_commands": [
+    "openclaw status — 显示存储路径和最近会话",
+    "openclaw sessions --json — 转储每个条目",
+    "openclaw gateway call sessions.list --params '{}' — 从正在运行的网关获取会话",
+    "/status — 在聊天中查看代理可达性、上下文使用量、当前状态",
+    "/context list 或 /context detail — 查看系统提示和注入的工作区文件内容",
+    "/stop — 中止当前运行，清除排队后续操作，停止子代理运行",
+    "/compact — 总结较旧的上下文并释放窗口空间"
+  ],
+  "pre_compaction_memory_flush": {
+    "description": "当会话接近自动压缩时，运行静默内存刷新轮次，提醒模型将持久性笔记写入磁盘",
+    "condition": "仅在工作区可写时运行"
+  }
+}

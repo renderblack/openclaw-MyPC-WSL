@@ -1,0 +1,43 @@
+{
+  "title": "OpenClaw Anthropic Provider",
+  "version": "2026-04-10",
+  "source": "openclawx.cloud/en/providers/anthropic",
+  "auth_options": {
+    "option_a_api_key": {
+      "best_for": "标准 API 访问和按用量计费",
+      "setup": "openclaw onboard --anthropic-api-key $ANTHROPIC_API_KEY",
+      "config": {"env": {"ANTHROPIC_API_KEY": "sk-ant-..."}, "agents": {"defaults": {"model": {"primary": "anthropic/claude-opus-4-6"}}}}
+    },
+    "option_b_setup_token": {
+      "best_for": "使用 Claude 订阅",
+      "setup": "claude setup-token 然后 openclaw models auth setup-token --provider anthropic",
+      "note": "setup-token 由 Claude Code CLI 生成，非 Anthropic Console"
+    }
+  },
+  "thinking_defaults": {
+    "description": "Claude 4.6 模型在未设置显式 thinking 级别时默认为自适应思考",
+    "override": "per-message (/think:) 或 model params: agents.defaults.models[anthropic/].params.thinking"
+  },
+  "prompt_caching": {
+    "description": "Anthropic API 的提示缓存功能，仅 API 可用，订阅 auth 不遵守缓存设置",
+    "cacheRetention_options": {
+      "none": "禁用提示缓存",
+      "short": "5分钟（API Key auth 默认）",
+      "long": "1小时（需要 beta flag）"
+    },
+    "default": "API Key 认证时自动应用 cacheRetention: short (5分钟缓存)",
+    "legacy_parameter": "cacheControlTtl (5m=short, 1h=long)，建议迁移到 cacheRetention"
+  },
+  "1m_context_window": {
+    "description": "Anthropic 1M 上下文窗口为 beta 限制",
+    "enable": "params.context1m: true",
+    "requirement": "Anthropic 必须允许该凭证使用长上下文（通常 API key 计费或订阅账户启用 Extra Usage）",
+    "note": "OAuth/subscription tokens (sk-ant-oat-*) 不支持 context1m，OpenClaw 自动跳过"
+  },
+  "troubleshooting": {
+    "401_token_invalid": "Claude 订阅 auth 可能过期或被撤销，重新运行 claude setup-token",
+    "no_api_key_found": "Auth 按代理划分，新代理不继承主代理的密钥，重新运行该代理的 onboarding",
+    "no_credentials_found": "运行 openclaw models status 查看哪个 auth profile 活跃，重新 onboarding 或 paste setup-token",
+    "no_available_auth": "检查 openclaw models status --json 的 auth.unusableProfiles，添加另一个 profile 或等待冷却"
+  }
+}

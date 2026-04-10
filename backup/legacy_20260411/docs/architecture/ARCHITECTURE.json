@@ -1,0 +1,81 @@
+{
+  "title": "OpenClaw Gateway Architecture",
+  "version": "2026-04-10",
+  "source_zh": "openclawx.cloud/zh/concepts/architecture",
+  "source_en": "openclawx.cloud/en/concepts/architecture",
+  "last_updated": "2026-01-22",
+  "overview": "网关是整个系统的核心枢纽——负责管理所有消息通道的连接，并协调客户端与节点之间的通信",
+  "core_components": {
+    "gateway_daemon": {
+      "role": "大脑/守护进程",
+      "responsibilities": [
+        "维护与各消息平台的连接（WhatsApp/Baileys, Telegram/grammy, Slack, Discord, Signal, iMessage, WebChat）",
+        "暴露类型化的 WebSocket API（支持请求、响应、服务器推送事件）",
+        "使用 JSON Schema 验证所有入站消息帧",
+        "发出各类事件（agent, chat, presence, health, heartbeat, cron）"
+      ]
+    },
+    "clients": {
+      "types": ["macOS 应用", "CLI", "Web 管理界面", "自动化程序"],
+      "connection": "每个客户端维护一个独立的 WebSocket 连接到网关",
+      "default_bind": "127.0.0.1:18789",
+      "capabilities": ["发送请求命令（health, status, send, agent, system-presence）", "订阅并接收事件（tick, agent, presence, shutdown）"]
+    },
+    "nodes": {
+      "platforms": ["macOS", "iOS", "Android", "无头设备"],
+      "connection": "连接到同一个 WebSocket 服务器，声明 role: node",
+      "pairing": "设备配对（角色为 node），批准信息存储在设备配对记录中",
+      "exposed_commands": ["canvas.*", "camera.*", "screen.record", "location.get"]
+    },
+    "webchat": {
+      "type": "轻量级 Web 聊天界面",
+      "connection": "静态前端页面，通过网关 WebSocket API 获取聊天记录和发送消息",
+      "remote_deployment": "通过与其他客户端相同的 SSH/Tailscale 隧道连接"
+    }
+  },
+  "canvas_service": {
+    "paths": [
+      "/__openclaw__/canvas/ (智能体可编辑的 HTML/CSS/JS)",
+      "/__openclaw__/a2ui/ (A2UI 宿主页面)"
+    ],
+    "port": "使用与网关相同的端口（默认 18789）"
+  },
+  "wire_protocol": {
+    "transport": "WebSocket，文本帧携带 JSON 负载",
+    "first_frame": "必须是 connect",
+    "message_format": {
+      "request": "{\"type\":\"req\", \"id\", \"method\", \"params\"} → {\"type\":\"res\", \"id\", \"ok\", \"payload|error\"}",
+      "event": "{\"type\":\"event\", \"event\", \"payload\", \"seq?\", \"stateVersion?\"}"
+    },
+    "authentication": "如果设置了 OPENCLAW_GATEWAY_TOKEN（或 --token），则 connect.params.auth.token 必须匹配",
+    "idempotency": "具有副作用的命令（send、agent）需要提供幂等键，服务端维护短期去重缓存",
+    "node_declaration": "节点必须在 connect 中包含 role: \"node\" 以及 caps/commands/permissions"
+  },
+  "pairing_and_trust": {
+    "device_identity": "所有 WebSocket 客户端在 connect 时都必须提供设备身份",
+    "approval_flow": "新设备 ID 需要经过配对批准，批准后颁发设备令牌供后续连接使用",
+    "local_auto_approve": "本地连接（环回地址或网关主机自身的 Tailscale 地址）可配置为自动批准",
+    "signature_requirement": "所有连接都必须对 connect.challenge 随机数进行签名",
+    "metadata_binding": "签名负载 v3 版本还会绑定 platform + deviceFamily，元数据变更需要重新配对"
+  },
+  "remote_access": {
+    "preferred": "Tailscale 或其他 VPN",
+    "alternative": "SSH 隧道: ssh -N -L 18789:127.0.0.1:18789 user@host",
+    "tls": "远程场景下可以为 WebSocket 启用 TLS + 可选证书固定"
+  },
+  "operations": {
+    "start": "openclaw gateway（前台运行，日志输出到标准输出）",
+    "health_check": "通过 WebSocket 发送 health 请求（也包含在 hello-ok 响应中）",
+    "supervision": "使用 launchd（macOS）或 systemd（Linux）实现自动重启"
+  },
+  "core_invariants": [
+    "每台主机上恰好一个网关控制一个 Baileys 会话",
+    "握手是强制性的：任何非 JSON 格式或首帧不是 connect 的消息都会导致连接立即关闭",
+    "事件不会重放：客户端检测到消息间隙时必须主动刷新状态"
+  ],
+  "protocol_typing": {
+    "schema_engine": "TypeBox",
+    "generation": "TypeBox schema → JSON Schema → Swift 模型",
+    "description": "类型优先的开发方式"
+  }
+}

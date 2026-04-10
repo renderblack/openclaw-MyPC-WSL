@@ -1,0 +1,39 @@
+{
+  "title": "OpenClaw WhatsApp Channel",
+  "version": "2026-04-10",
+  "source_zh": "openclawx.cloud/zh/channels/whatsapp",
+  "source_en": "openclawx.cloud/en/channels/whatsapp",
+  "status": "production-ready via WhatsApp Web (Baileys)",
+  "quick_setup": [
+    "配置 dmPolicy/allowFrom/groupPolicy",
+    "运行 openclaw channels login --channel whatsapp 扫码",
+    "启动网关 openclaw gateway",
+    "批准配对请求 openclaw pairing list/approve"
+  ],
+  "access_control": {
+    "dm_policy_options": ["pairing(默认)", "allowlist", "open", "disabled"],
+    "group_policy_options": ["allowlist(默认)", "open", "disabled"],
+    "allowFrom": "E.164格式手机号如 +15551234567"
+  },
+  "runtime_model": [
+    "网关管理WhatsApp socket和自动重连",
+    "出站发送需要目标账户有活跃监听器",
+    "状态广播和官方广播被忽略(@status/@broadcast)",
+    "私聊使用DM会话规则(session.dmScope)",
+    "群聊会话相互隔离(agent::whatsapp:group:)"
+  ],
+  "self_chat_protection": "当已链接的本机号码在allowFrom中时，自动激活：跳过自聊已读回执、忽略自我提及、自动添加[{identity.name}]前缀",
+  "ack_reaction": {
+    "emoji": "确认表情",
+    "direct": "直接模式",
+    "group": "always|mentions|never"
+  },
+  "multi_account": "支持多账户，通过accounts配置",
+  "high_signal_fields": [
+    "dmPolicy, allowFrom, groupPolicy, groupAllowFrom, groups",
+    "textChunkLimit, chunkMode, mediaMaxMb, sendReadReceipts, ackReaction",
+    "accounts..enabled, accounts..authDir",
+    "configWrites, debounceMs, web.enabled, web.heartbeatSeconds",
+    "session.dmScope, historyLimit, dmHistoryLimit"
+  ]
+}

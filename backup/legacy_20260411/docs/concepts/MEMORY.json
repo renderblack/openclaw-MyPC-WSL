@@ -1,0 +1,42 @@
+{
+  "title": "OpenClaw Memory System",
+  "version": "2026-04-10",
+  "source_zh": "openclawx.cloud/zh/concepts/memory",
+  "source_en": "openclawx.cloud/en/concepts/memory",
+  "memory_types": {
+    "semantic_memory": {
+      "description": "基于语义的长期记忆存储和检索",
+      "storage": "~/.openclaw/memory/",
+      "search": "openclaw memory search <query>",
+      "requires": "需要配置向量模型（嵌入模型）"
+    },
+    "session_memory": {
+      "description": "当前会话的短期上下文",
+      "storage": "会话 transcript 文件",
+      "auto_flush": "会话结束时自动持久化关键信息"
+    },
+    "file_memory": {
+      "description": "工作区中的结构化记忆文件",
+      "locations": ["MEMORY.md", "memory/*.md", "AGENTS.md", "SOUL.md", "USER.md"],
+      "auto_read": "会话启动时自动读取"
+    }
+  },
+  "memory_workflow": {
+    "session_start": "读取工作区记忆文件（MEMORY.md, memory/YYYY-MM-DD.md）",
+    "during_session": "模型可将重要信息写入记忆文件",
+    "session_end": "自动将长时记忆持久化"
+  },
+  "memory_commands": {
+    "search": "openclaw memory search <query> — 语义搜索记忆",
+    "status": "openclaw memory status — 显示索引统计",
+    "index": "openclaw memory index — 重新索引记忆文件"
+  },
+  "persistence_tips": [
+    "明确告知模型记住特定信息（'记住这个...'）",
+    "使用 memory/YYYY-MM-DD.md 保存每日笔记",
+    "使用 MEMORY.md 保存长期重要信息",
+    "定期运行 memory search 检查记忆召回"
+  ],
+  "limits": "记忆文件过大会影响加载速度，建议定期整理和压缩",
+  "semantic_search_config": "需要配置嵌入模型（embedding model）才能使用语义搜索"
+}

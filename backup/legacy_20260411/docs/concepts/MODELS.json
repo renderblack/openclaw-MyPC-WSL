@@ -1,0 +1,100 @@
+{
+  "title": "OpenClaw Model Concepts",
+  "version": "2026-04-10",
+  "source_zh": "openclawx.cloud/zh/concepts/models",
+  "source_en": "openclawx.cloud/en/concepts/models",
+  "model_selection_order": [
+    "主模型 (agents.defaults.model.primary 或 agents.defaults.model)",
+    "回退模型 (agents.defaults.model.fallbacks，按顺序)",
+    "提供商认证故障转移发生在切换到下一个模型之前，在提供商内部进行"
+  ],
+  "key_config_keys": [
+    "agents.defaults.model.primary / agents.defaults.model.fallbacks",
+    "agents.defaults.imageModel.primary / agents.defaults.imageModel.fallbacks",
+    "agents.defaults.models (允许列表 + 别名 + 提供商参数)",
+    "models.providers (自定义提供商写入 models.json)"
+  ],
+  "quick_model_policy": [
+    "将主模型设置为对您可用的、性能最强的、最新一代的模型",
+    "对于成本/延迟敏感的任务和较低风险的聊天，使用回退模型",
+    "对于启用工具的代理或不受信任的输入，避免使用较旧/较弱的模型层级"
+  ],
+  "model_not_allowed_error": {
+    "condition": "设置了 agents.defaults.models，但用户选择的模型不在允许列表中",
+    "message": "Model \"provider/model\" is not allowed. Use /model to list available models.",
+    "explanation": "发生在生成正常回复之前，消息可能感觉像'没有响应'",
+    "fix": ["将该模型添加到 agents.defaults.models", "清除允许列表（移除 agents.defaults.models）", "从 /model list 中选择一个模型"]
+  },
+  "slash_commands": {
+    "/model": "切换当前会话模型",
+    "/model list": "显示可用模型列表",
+    "/model 3": "通过编号选择模型",
+    "/model openai/gpt-5.2": "通过 provider/model 选择",
+    "/model status": "显示详细状态（认证候选者、端点、api 模式）"
+  },
+  "models_cli": {
+    "list": {"command": "openclaw models list", "flags": ["--all", "--local", "--provider", "--plain", "--json"]},
+    "status": {"command": "openclaw models status", "flags": ["--json", "--plain", "--check", "--probe", "--probe-provider", "--probe-profile", "--probe-timeout", "--probe-concurrency", "--probe-max-tokens"]},
+    "set": "openclaw models set <provider/model> - 设置 agents.defaults.model.primary",
+    "set_image": "openclaw models set-image <provider/model> - 设置 agents.defaults.imageModel.primary",
+    "aliases": "openclaw models aliases list|add|remove",
+    "fallbacks": "openclaw models fallbacks list|add|remove|clear",
+    "image_fallbacks": "openclaw models image-fallbacks list|add|remove|clear",
+    "scan": {
+      "command": "openclaw models scan",
+      "description": "检查 OpenRouter 免费模型目录，可选探测模型对工具和图像的支持",
+      "flags": ["--no-probe", "--min-params", "--max-age-days", "--provider", "--max-candidates", "--set-default", "--set-image", "--timeout", "--concurrency"]
+    }
+  },
+  "models_json": {
+    "location": "~/.openclaw/agents/<agentId>/models.json",
+    "merge_mode": "默认合并（除非 models.mode 设置为 replace）",
+    "merge_precedence": [
+      "代理 models.json 中已存在的非空 baseUrl 优先",
+      "代理 models.json 中的非空 apiKey 仅当该提供商在当前配置上下文中不受 SecretRef 管理时才优先",
+      "受 SecretRef 管理的 apiKey 从源标记刷新",
+      "其他提供商字段从配置和规范化的目录数据中刷新"
+    ]
+  },
+  "models_registry": {
+    "description": "OpenClaw 附带 pi-ai 目录，这些提供商无需 models.providers 配置",
+    "built_in_providers": [
+      {"id": "openai", "auth_env": "OPENAI_API_KEY", "example": "openai/gpt-5.1-codex"},
+      {"id": "anthropic", "auth_env": "ANTHROPIC_API_KEY 或 claude setup-token", "example": "anthropic/claude-opus-4-6"},
+      {"id": "openai-codex", "auth_env": "OAuth (ChatGPT)", "example": "openai-codex/gpt-5.3-codex"},
+      {"id": "opencode", "auth_env": "OPENCODE_API_KEY 或 OPENCODE_ZEN_API_KEY", "example": "opencode/claude-opus-4-6"},
+      {"id": "google", "auth_env": "GEMINI_API_KEY", "example": "google/gemini-3-pro-preview"},
+      {"id": "zai", "auth_env": "ZAI_API_KEY", "example": "zai/glm-5"},
+      {"id": "vercel-ai-gateway", "auth_env": "AI_GATEWAY_API_KEY", "example": "vercel-ai-gateway/anthropic/claude-opus-4.6"},
+      {"id": "kilocode", "auth_env": "KILOCODE_API_KEY", "example": "kilocode/anthropic/claude-opus-4.6"},
+      {"id": "openrouter", "auth_env": "OPENROUTER_API_KEY", "example": "openrouter/anthropic/claude-sonnet-4-5"},
+      {"id": "xai", "auth_env": "XAI_API_KEY"},
+      {"id": "mistral", "auth_env": "MISTRAL_API_KEY", "example": "mistral/mistral-large-latest"},
+      {"id": "groq", "auth_env": "GROQ_API_KEY"},
+      {"id": "cerebras", "auth_env": "CEREBRAS_API_KEY", "example": "cerebras with GLM models"},
+      {"id": "github-copilot", "auth_env": "COPILOT_GITHUB_TOKEN / GH_TOKEN / GITHUB_TOKEN"},
+      {"id": "huggingface", "auth_env": "HUGGINGFACE_HUB_TOKEN 或 HF_TOKEN", "example": "huggingface/deepseek-ai/DeepSeek-R1"}
+    ]
+  },
+  "custom_providers": [
+    {"id": "moonshot", "name": "Moonshot AI (Kimi)", "auth_env": "MOONSHOT_API_KEY", "api": "openai-completions", "base_url": "https://api.moonshot.ai/v1"},
+    {"id": "kimi-coding", "name": "Kimi Coding", "auth_env": "KIMI_API_KEY"},
+    {"id": "qwen-portal", "name": "Qwen OAuth", "auth": "OAuth device-code flow"},
+    {"id": "volcengine", "name": "Volcano Engine (豆包)", "auth_env": "VOLCANO_ENGINE_API_KEY"},
+    {"id": "byteplus", "name": "BytePlus (国际版)", "auth_env": "BYTEPLUS_API_KEY"},
+    {"id": "synthetic", "name": "Synthetic", "auth_env": "SYNTHETIC_API_KEY", "base_url": "https://api.synthetic.new/anthropic"},
+    {"id": "minimax", "name": "MiniMax", "auth_env": "MINIMAX_API_KEY"},
+    {"id": "ollama", "name": "Ollama", "auth": "无需（本地）", "base_url": "http://127.0.0.1:11434/v1"},
+    {"id": "vllm", "name": "vLLM", "auth": "可选", "base_url": "http://127.0.0.1:8000/v1"}
+  ],
+  "api_key_rotation": {
+    "priority_order": [
+      "OPENCLAW_LIVE__KEY（单个实时覆盖，最高优先级）",
+      "_API_KEYS（逗号或分号分隔的列表）",
+      "_API_KEY（主密钥）",
+      "_API_KEY_*（编号列表）"
+    ],
+    "behavior": "仅在收到速率限制响应（429、rate_limit、quota、resource exhausted）时使用下一个密钥重试",
+    "non_rate_limit_failure": "立即失败，不尝试密钥轮换"
+  }
+}

@@ -1,0 +1,102 @@
+{
+  "title": "OpenClaw FAQ Key Points",
+  "version": "2026-04-10",
+  "source": "openclawx.cloud/zh/help/faq + en/help/faq",
+  "quick_troubleshooting": {
+    "first_60_seconds": [
+      "openclaw status — 快速本地摘要",
+      "openclaw status --all — 可分享的诊断报告",
+      "openclaw gateway status — 守护进程+端口状态",
+      "openclaw status --deep — 深度探测+提供商检测",
+      "openclaw logs --follow — 跟踪最新日志",
+      "openclaw doctor — 修复+健康检查"
+    ]
+  },
+  "installation": {
+    "recommended": "curl -fsSL https://openclaw.ai/install.sh | bash && openclaw onboard --install-daemon",
+    "runtime": "Node >= 22, pnpm recommended, Bun not recommended",
+    "from_source": "git clone → pnpm install → pnpm build → openclaw onboard"
+  },
+  "runtime_requirements": {
+    "minimum": "Node >= 22",
+    "recommended": "512MB-1GB RAM, 1 core, 500MB disk (personal use)",
+    "raspberry_pi": "Pi 4 可以运行，推荐 2GB 内存以备余量"
+  },
+  "model_auth": {
+    "no_subscription_needed": "可使用 API key 或本地模型运行",
+    "subscription_auth": "支持 Claude setup-token 和 Codex OAuth",
+    "setup_token_location": "由 Claude Code CLI 生成，非 Anthropic Console",
+    "oauth_vs_api_key": "OAuth 需定期刷新，API key 更稳定"
+  },
+  "storage": {
+    "state_dir": "~/.openclaw/",
+    "workspace": "~/.openclaw/workspace/",
+    "sessions": "~/.openclaw/agents/<agentId>/sessions/",
+    "memory": "~/.openclaw/memory/"
+  },
+  "backup_strategy": {
+    "critical_paths": ["~/.openclaw/", "~/.openclaw/workspace/"],
+    "session_store": "~/.openclaw/agents/<agentId>/sessions/ (不提交 Git)",
+    "recommendation": "定期备份 ~/.openclaw/ 整体"
+  },
+  "migration": {
+    "process": "复制 ~/.openclaw/ + 工作区到新机器 → 运行 openclaw doctor → 重启网关",
+    "preserves": "配置、认证、WhatsApp 凭据、会话、内存"
+  },
+  "remote_access": {
+    "preferred": "Tailscale Serve",
+    "alternatives": ["SSH 隧道: ssh -N -L 18789:127.0.0.1:18789 user@host", "Tailnet 绑定: openclaw gateway --bind tailnet --token ''"],
+    "local": "http://127.0.0.1:18789/"
+  },
+  "channels": {
+    "quick_start": "Telegram（仅需 Bot Token），WhatsApp 需扫码配对",
+    "whatsapp_pairing": "支持配对码机制，陌生人默认无法发消息",
+    "multi_user": "支持多用户，通过 allowFrom 配置"
+  },
+  "sessions": {
+    "new_conversation": "/new 或 /reset",
+    "auto_reset": "每天凌晨 4:00（默认），idle 时长可配置",
+    "dm_scope": "默认 main（共享会话），可设为 per_peer/per_channel_peer 实现用户隔离"
+  },
+  "model_selection": {
+    "default_model": "agents.defaults.model.primary",
+    "fallbacks": "agents.defaults.model.fallbacks",
+    "aliases": "agents.defaults.models.<model>.alias",
+    "switch": "/model <model-id> 或 /model list"
+  },
+  "failover": {
+    "trigger": "速率限制或认证失败时自动切换",
+    "key_rotation": "支持多个 API key，自动轮换"
+  },
+  "security": {
+    "dm_policy": "默认 pairing（陌生人需配对批准）",
+    "allowlist": "allowFrom 配置已知发送者",
+    "prompt_injection": "默认将链接/附件/粘贴指令视为敌对",
+    "sandboxing": "工具级隔离 + Docker 容器边界"
+  },
+  "skills": {
+    "install": "openclaw skills install <skill-name>",
+    "customize": "在 ~/.openclaw/skills/ 创建自定义技能",
+    "list": "openclaw skills list"
+  },
+  "cron": {
+    "schedule": "支持 cron 表达式定时任务",
+    "delivery": "announce/dm/session/quiet 模式",
+    "timezone": "默认 Asia/Shanghai"
+  },
+  "nodes": {
+    "purpose": "提供屏幕/摄像头/画布/命令执行能力",
+    "platforms": "macOS, iOS, Android, 无头设备",
+    "pairing": "设备配对，声明 role: node"
+  },
+  "common_errors": {
+    "pairing_required": "CLI 命令需要设备配对，运行 openclaw pairing list/approve",
+    "model_not_allowed": "模型不在 agents.defaults.models 允许列表中",
+    "context_too_large": "会话上下文超限，运行 /new 或 /compact"
+  },
+  "dashboard": {
+    "url": "http://127.0.0.1:18789/",
+    "auth": "需要 gateway.auth.token 或 OPENCLAW_GATEWAY_TOKEN",
+    "remote": "通过 Tailscale/SSH 隧道访问"
+  }
+}

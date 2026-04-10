@@ -1,0 +1,30 @@
+{
+  "title": "OpenClaw Cron Jobs Automation",
+  "version": "2026-04-10",
+  "source_zh": "openclawx.cloud/zh/automation/cron-jobs",
+  "source_en": "openclawx.cloud/en/automation/cron-jobs",
+  "overview": "OpenClaw 支持 Cron 定时任务，可按计划或持续在后台运行任务",
+  "cron_cli": {
+    "list": {"command": "openclaw cron list", "description": "列出定时任务"},
+    "add": {"command": "openclaw cron add", "params": ["--name", "--session", "--message", "--cron", "--model", "--thinking", "--deliver"]},
+    "edit": {"command": "openclaw cron edit", "params": ["--name", "--session", "--message", "--cron", "--model", "--thinking", "--deliver"]},
+    "rm": {"command": "openclaw cron rm", "description": "删除定时任务"},
+    "enable": {"command": "openclaw cron enable", "description": "启用定时任务"},
+    "disable": {"command": "openclaw cron disable", "description": "禁用定时任务"},
+    "runs": {"command": "openclaw cron runs", "description": "查看运行记录"},
+    "run": {"command": "openclaw cron run", "description": "手动运行"}
+  },
+  "delivery_options": {
+    "mode_announce": "在频道中发布结果（默认）",
+    "mode_dm": "通过私信发送结果给触发用户",
+    "mode_session": "不发送结果，会话保留在 cron 会话中",
+    "mode_quiet": "静默模式，不发送任何消息"
+  },
+  "cron_expression_format": "标准 5 字段 cron 格式（分 时 日 月 周）",
+  "timezone": "默认 Asia/Shanghai，可通过 --timezone 参数指定",
+  "session_isolation": "每次运行生成新的 sessionId（不进行空闲重用）",
+  "models_in_cron": "可以指定模型（--model）或使用默认模型",
+  "thinking_mode": "支持 --thinking 参数启用思考模式",
+  "max_duration": "单次 cron 运行最大时长建议不超过 30 分钟",
+  "gmail_pubsub": "支持 Gmail Pub/Sub 钩子进行邮件触发"
+}

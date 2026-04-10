@@ -1,0 +1,48 @@
+{
+  "title": "OpenClaw Ollama Provider",
+  "version": "2026-04-10",
+  "source": "openclawx.cloud/en/providers/ollama",
+  "overview": "Ollama 本地 LLM 运行时，支持开源模型本地运行，支持流式传输和工具调用",
+  "important_warnings": [
+    "远程 Ollama 用户：不要使用 /v1 OpenAI兼容 URL (http://host:11434/v1)，这会破坏工具调用",
+    "使用原生 Ollama API URL: baseUrl: http://host:11434 (无 /v1)"
+  ],
+  "quick_start": [
+    "安装 Ollama: https://ollama.ai",
+    "拉取模型: ollama pull gpt-oss:20b / llama3.3 / qwen2.5-coder:32b / deepseek-r1:32b",
+    "设置环境变量: export OLLAMA_API_KEY=ollama-local",
+    "配置: openclaw config set models.providers.ollama.apiKey ollama-local",
+    "使用: agents.defaults.model.primary: ollama/gpt-oss:20b"
+  ],
+  "model_discovery": {
+    "description": "设置 OLLAMA_API_KEY 且未定义 models.providers.ollama 时自动发现",
+    "behavior": [
+      "查询 /api/tags 和 /api/show",
+      "仅保留报告具有工具能力的模型",
+      "报告 thinking 时标记 reasoning",
+      "从 model_info[.context_length] 读取 contextWindow",
+      "maxTokens 设为 contextWindow 的 10 倍",
+      "所有成本设为 0"
+    ]
+  },
+  "configuration": {
+    "basic_env": "export OLLAMA_API_KEY=ollama-local",
+    "explicit_provider": {
+      "baseUrl": "http://ollama-host:11434",
+      "apiKey": "ollama-local",
+      "api": "ollama",
+      "models": [{"id": "gpt-oss:20b", "name": "GPT-OSS 20B", "reasoning": false, "contextWindow": 8192, "maxTokens": 81920}]
+    },
+    "legacy_openai_compat": {
+      "warning": "工具调用不可靠，仅在需要 OpenAI 格式代理且不依赖原生工具调用时使用",
+      "baseUrl": "http://ollama-host:11434/v1",
+      "api": "openai-completions",
+      "injectNumCtxForOpenAICompat": true
+    }
+  },
+  "troubleshooting": {
+    "ollama_not_detected": "确保 Ollama 正在运行，设置了 OLLAMA_API_KEY，且未定义显式 models.providers.ollama",
+    "no_models_available": "OpenClaw 仅自动发现报告工具支持的模型，拉取工具型模型或显式定义模型",
+    "connection_refused": "检查 Ollama 是否在正确端口运行，curl http://localhost:11434/api/tags"
+  }
+}

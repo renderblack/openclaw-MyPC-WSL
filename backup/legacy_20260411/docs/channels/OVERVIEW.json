@@ -1,0 +1,43 @@
+{
+  "title": "OpenClaw Channels Overview",
+  "version": "2026-04-10",
+  "source": "openclawx.cloud/zh/channels",
+  "channels": {
+    "built_in": [
+      {"id": "bluebubbles", "name": "BlueBubbles", "platform": "iMessage", "features": ["edit", "unsend", "effects", "reactions", "group_management"]},
+      {"id": "discord", "name": "Discord", "features": ["servers", "channels", "dm"]},
+      {"id": "feishu", "name": "飞书/Lark", "type": "plugin", "note": "需单独安装"},
+      {"id": "googlechat", "name": "Google Chat", "features": ["webhook"]},
+      {"id": "imessage", "name": "iMessage (旧版)", "status": "deprecated", "note": "已弃用，新部署请使用 BlueBubbles"},
+      {"id": "irc", "name": "IRC", "features": ["channels", "dm", "pairing", "allowlist"]},
+      {"id": "line", "name": "LINE", "type": "plugin"},
+      {"id": "matrix", "name": "Matrix", "type": "plugin"},
+      {"id": "mattermost", "name": "Mattermost", "type": "plugin"},
+      {"id": "msteams", "name": "Microsoft Teams", "type": "plugin"},
+      {"id": "nextcloud-talk", "name": "Nextcloud Talk", "type": "plugin"},
+      {"id": "nostr", "name": "Nostr", "type": "plugin"},
+      {"id": "signal", "name": "Signal", "features": ["privacy_focused"]},
+      {"id": "synology-chat", "name": "Synology Chat", "type": "plugin"},
+      {"id": "slack", "name": "Slack", "features": ["bolt_sdk"]},
+      {"id": "telegram", "name": "Telegram", "features": ["groups", "grammy_bot_api"]},
+      {"id": "tlon", "name": "Tlon", "type": "plugin"},
+      {"id": "twitch", "name": "Twitch", "type": "plugin"},
+      {"id": "webchat", "name": "WebChat", "features": ["websocket"]},
+      {"id": "whatsapp", "name": "WhatsApp", "features": ["baileys", "qr_pairing"]},
+      {"id": "zalo", "name": "Zalo", "type": "plugin"},
+      {"id": "zalouser", "name": "Zalo Personal", "type": "plugin"}
+    ]
+  },
+  "dm_policy_options": {
+    "pairing": {"default": true, "description": "未知发送者收到配对码，需批准"},
+    "allowlist": {"description": "未知发送者被阻止"},
+    "open": {"description": "允许任何人发私信（需 allowFrom 包含 *）"},
+    "disabled": {"description": "完全忽略入站私信"}
+  },
+  "group_policy": "不同频道行为不同，详见群组文档",
+  "quick_start_recommendation": "Telegram（仅需 Bot Token），WhatsApp 需扫码配对且存储更多状态",
+  "security_notes": [
+    "私信配对(DM pairing)和白名单机制是强制启用的安全措施",
+    "多频道可同时运行，OpenClaw 会根据聊天来源自动路由"
+  ]
+}
