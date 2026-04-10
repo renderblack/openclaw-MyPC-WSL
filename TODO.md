@@ -85,6 +85,43 @@
 
 ---
 
+## 🎯 三维重建实战项目
+
+**目标**：获取最新3DGS开源项目，在本地搭建环境并实现三维重建
+
+### 阶段一：市场调研（1-2天）
+- [ ] 搜索 GitHub trending，找出近3个月活跃的3DGS项目
+- [ ] 对比主流项目特点，选出最适合入门的
+- [ ] 整理到 `learn/3d-reconstruction/projects-compare.md`
+
+**候选项目**：
+- gaussian-splatting（原版）
+- gaustudio（模块化）
+- supersplat（浏览器编辑器）
+
+### 阶段二：环境搭建（2-3天）
+- [ ] 检查 GPU 型号、显存、CUDA 版本
+- [ ] 安装/更新 CUDA + cuDNN
+- [ ] 创建 Python 虚拟环境
+- [ ] 安装项目依赖
+- [ ] 下载测试数据集
+
+### 阶段三：部署测试（3-5天）
+- [ ] 运行官方 Demo，确保输出正常
+- [ ] 用自己的测试图像进行重建
+- [ ] 导出结果（点云/mesh）
+- [ ] 记录完整流程到文档
+
+### 关键里程碑
+- [ ] Milestone 1：选定项目，整理对比文档
+- [ ] Milestone 2：环境搭建完成
+- [ ] Milestone 3：Demo 运行成功
+- [ ] Milestone 4：自己的图像重建成功
+
+**参考文档**：`learn/3d-reconstruction/README.md`
+
+---
+
 ## ✅ 已完成
 
 - [x] GitHub 仓库新建并同步（openclaw-MyPC-WSL）
