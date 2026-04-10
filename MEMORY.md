@@ -57,6 +57,16 @@
 
 ## 已知问题
 
+### OpenClaw CLI pairing required 故障
+- **问题**：`openclaw cron list/add` 等 CLI 命令报错 `gateway closed (1008): pairing required`，但 Gateway RPC probe 正常
+- **根因**：`~/.openclaw/devices/pending.json` 中有 repair 请求卡在待批准状态，阻止所有写操作
+- **排查流程**：
+  1. `cat ~/.openclaw/devices/pending.json` 查看待批准请求
+  2. 手动批准或从 pending.json 删除该请求
+  3. `openclaw gateway --force` 重启
+- **关键文件**：pending.json（待批准）/ paired.json（已批准）/ jobs.json（定时任务）
+- **经验**：CLI 超时 ≠ 失败，重启后可能恢复；直接修改设备文件是绕过 CLI 的备选方案
+
 ### music_generate 工具 Bug
 - **问题**: 使用内置 `music_generate` 工具时 Gateway 崩溃
 - **建议**: 暂不使用，等官方修复
@@ -74,6 +84,12 @@
 ---
 
 ## 经验总结
+
+### OpenClaw 配对机制（2026-04-10）
+- **pairing required ≠ token 失效**：Gateway 有独立的配对机制，设备状态存在 `~/.openclaw/devices/`
+- **CLI vs API 工具**：cron 工具（API）受 pairing 影响；openclaw cron CLI 需要 pairing 正常才能操作
+- **CLI 超时**：不代表失败，有时重启后自动恢复
+- **备选方案**：直接修改 `~/.openclaw/devices/paired.json` 可绕过 CLI
 
 ### Gateway 重启（2026-04-09）
 - WSL2 环境下不要用 `openclaw gateway restart`（依赖 systemd）
