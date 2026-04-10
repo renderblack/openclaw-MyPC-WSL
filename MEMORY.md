@@ -134,3 +134,50 @@
 3. 输出纯文本
 
 **验证**：成功识别智慧梁场演示动画制作合同（93240元）
+
+## OpenClaw 文档知识库（2026-04-10）
+
+### 知识库路径
+~/openclaw-docs/latest/
+
+### 知识库结构
+- INDEX.md — 全局索引
+- FINAL_REPORT.md — 完整深度研究报告
+- docs/cli/CLI.json — CLI命令参考
+- docs/architecture/ARCHITECTURE.json — 网关架构
+- docs/config/CONFIG.json — 配置指南
+- docs/channels/OVERVIEW.json — 频道概览
+- docs/channels/WHATSAPP.json — WhatsApp配置
+- docs/channels/TELEGRAM.json — Telegram配置
+- docs/security/SECURITY.json — 安全配置
+- docs/concepts/MODELS.json — 模型系统
+- docs/concepts/SESSION.json — 会话管理
+- docs/concepts/MEMORY.json — 内存系统
+- docs/providers/ANTHROPIC.json — Anthropic配置
+- docs/providers/OLLAMA.json — Ollama配置
+- docs/providers/MINIMAX.json — MiniMax配置
+- docs/automation/CRON.json — Cron任务
+- docs/best-practices/FAQ_KEY_POINTS.json — FAQ要点
+
+### 关键文档URL
+- 官网: https://openclawx.cloud
+- 中文: https://openclawx.cloud/zh
+- 英文: https://openclawx.cloud/en
+- GitHub: https://github.com/openclaw/openclaw
+
+### 版本范围
+v2026.3.0 ~ v2026.4.9
+
+### 重要配置
+- Gateway端口: 18789 (loopback)
+- 热重载: hybrid模式
+- DM隔离: dmScope选项（main/per_peer/per_channel_peer）
+- 安全审计: openclaw security audit [--deep] [--fix]
+
+### 故障排查命令
+1. openclaw status
+2. openclaw status --all
+3. openclaw status --deep
+4. openclaw logs --follow
+5. openclaw doctor
+
