@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-04-12T12:02:49.683Z",
+  "updatedAt": "2026-04-12T22:10:55.043Z",
   "entries": {
     "memory:memory/2026-04-05.md:116:148": {
       "key": "memory:memory/2026-04-05.md:116:148",
@@ -133,18 +133,20 @@
       "endLine": 183,
       "source": "memory",
       "snippet": "agent-browser screenshot # 查看页面元素 agent-browser snapshot -i # 点击元素 agent-browser click <ref> # 查找并点击 agent-browser find text \"登录\" click ``` #### 4. 截图发送微信 ```bash # 截图保存路径 ~/.agent-browser/tmp/screenshots/ # 复制到workspace cp <截图路径> ~/.openclaw/workspace/screenshots/ # 通过 message 工具发送到微信 message(action=send, channel=openclaw-weixin, filePath=\"路径\", target=\"o9cq80xO-9exHj-UMC1xQUSNgK5g@im.wechat\") ``` ### 最终结果 - ✅ agent-browser 技能安装完成 - ✅ B站扫码登录成功 - ✅ 截图可发送到微信 - ✅ 露头模式绕过反爬 ### 教训 1. **遇到权限问题**：先让用户手动解决，不要硬磕 2. **反爬严格的网站**：放弃无头模式，用露头模式 3. **微信看不到Ubuntu桌面**：截图必须发过去才能让用户看到 --- ## HEARTBEAT.md 更新记录 - 状态检查时间：2026-04-10 11:38（已同步） - 最近检查：系统正常，无异常 - agent-browser测试完成：2026-04-10 12:05 ## 傍晚工",
-      "recallCount": 1,
+      "recallCount": 2,
       "dailyCount": 0,
       "groundedCount": 0,
-      "totalScore": 0.8182479039690208,
-      "maxScore": 0.8182479039690208,
+      "totalScore": 1.6386031126713445,
+      "maxScore": 0.8203552087023238,
       "firstRecalledAt": "2026-04-11T01:28:57.799Z",
-      "lastRecalledAt": "2026-04-11T01:28:57.799Z",
+      "lastRecalledAt": "2026-04-12T22:10:55.043Z",
       "queryHashes": [
-        "dde4e87206ec"
+        "dde4e87206ec",
+        "d12c9b8a1518"
       ],
       "recallDays": [
-        "2026-04-11"
+        "2026-04-11",
+        "2026-04-13"
       ],
       "conceptTags": [
         "agent-browser",
@@ -164,18 +166,20 @@
       "endLine": 337,
       "source": "memory",
       "snippet": "- 使用方式：`--announce --channel <channel> --to <target>` #### 关键文档摘录 > \"Cron is the Gateway's built-in scheduler. It persists jobs, wakes the agent at the right time, and can deliver output back to a chat channel or webhook endpoint.\" #### 结论 - **QQ Bot 可以推送**：OpenClaw 通过 WebSocket 连接 QQ Bot，支持发送消息 - **OpenClaw Cron 支持推送**：内置调度器可直接推送结果到频道 - **下一步**：研究 OpenClaw Cron 如何配置为推送至 QQ 频道 --- ## 待办事项（更新） - [x] ~~模型切换到 M2.5~~ ✅ - [x] ~~Claude Code 源码提取~~ ✅ - [ ] 研究 OpenClaw Cron 推送至 QQ 的配置方法 - [ ] 网关启动冲突问题修复（LogonTrigger → BootTrigger） - [x] 待办已迁移至 MEMORY.md 统一管理 --- ## Claude Code 源码分析 (10:30-10:41) ### 用户需求 - 分析和学习需要并行，从中获取经验 - 用户想从源码中提取对 OpenClaw 有价值的经验 ### 已完成分析文档 **文档位置**：`D:\\ClaudeCode\\doc",
-      "recallCount": 1,
+      "recallCount": 2,
       "dailyCount": 0,
       "groundedCount": 0,
-      "totalScore": 0.8118008965613767,
-      "maxScore": 0.8118008965613767,
+      "totalScore": 1.6257553924395864,
+      "maxScore": 0.8139544958782097,
       "firstRecalledAt": "2026-04-11T01:28:57.799Z",
-      "lastRecalledAt": "2026-04-11T01:28:57.799Z",
+      "lastRecalledAt": "2026-04-12T22:10:55.043Z",
       "queryHashes": [
-        "dde4e87206ec"
+        "dde4e87206ec",
+        "d12c9b8a1518"
       ],
       "recallDays": [
-        "2026-04-11"
+        "2026-04-11",
+        "2026-04-13"
       ],
       "conceptTags": [
         "gateway",
@@ -195,18 +199,20 @@
       "endLine": 304,
       "source": "memory",
       "snippet": "- **网关**：✅ 运行中 --- ## 下午工作 (10:00 - 进行中) ### 目标：实现主动推送到 QQ #### 探索过程 **1. 微信推送不可行** - 原因：个人微信只能被动接收，无法主动推送（API 限制） **2. QQ API 测试（失败）** - 测试端点： - `https://api.q.qq.com/api/oauth2/access_token` → 404 - `https://graph.qq.com/oauth2.0/token` → 参数错误 - **发现**：QQ Bot 使用 **WebSocket 网关**，不是 REST API - 之前测试 REST API 端点是错误的方向 **3. QQ Bot 官方文档研究** - 文档地址：https://bot.q.qq.com/wiki/ - 关键信息： - 使用 WebSocket 网关接收事件 - 使用 REST API 发送消息 - 支持 C2C（私聊）、Group（群聊）、Guild（频道） - 目标格式：`qqbot:c2c:OPENID` **4. OpenClaw 推送机制研究** - 文档地址：https://docs.openclaw.ai/automation/cron-jobs - **重大发现**：OpenClaw 内置 **Cron 调度器** - 功能： - 持久化任务 - 按时唤醒 Agent - **可推送输出到聊天频道** - 使用方式：`--announce --channel <channe",
-      "recallCount": 1,
+      "recallCount": 2,
       "dailyCount": 0,
       "groundedCount": 0,
-      "totalScore": 0.801427114972465,
-      "maxScore": 0.801427114972465,
+      "totalScore": 1.6050802442483127,
+      "maxScore": 0.8036531292758479,
       "firstRecalledAt": "2026-04-11T01:28:57.799Z",
-      "lastRecalledAt": "2026-04-11T01:28:57.799Z",
+      "lastRecalledAt": "2026-04-12T22:10:55.043Z",
       "queryHashes": [
-        "dde4e87206ec"
+        "dde4e87206ec",
+        "d12c9b8a1518"
       ],
       "recallDays": [
-        "2026-04-11"
+        "2026-04-11",
+        "2026-04-13"
       ],
       "conceptTags": [
         "网关",
@@ -248,6 +254,37 @@
         "84.54",
         "62.1",
         "agents.md"
+      ]
+    },
+    "memory:memory/2026-04-10.md:56:98": {
+      "key": "memory:memory/2026-04-10.md:56:98",
+      "path": "memory/2026-04-10.md",
+      "startLine": 56,
+      "endLine": 98,
+      "source": "memory",
+      "snippet": "- 下午上下文消耗检查：有1次 error 记录（Message failed），但任务本身执行成功 - ffmpeg 未安装：QQ 音频/视频转换受限 ## 系统状态 - 网关：✅ 正常运行 - QQBot：✅ 已连接 - 微信：✅ 已连接 - 时间：2026-04-10 17:03 --- ## agent-browser 技能安装与测试 ### 安装完成 - **来源**：`/tmp/agent-browser/`（用户提供的源码） - **安装位置**：`~/.openclaw/skills/agent-browser/` - **文件结构**：SKILL.md (34KB) + references/ + templates/ ### 测试过程（坎坷版）🔧 #### 第1阶段：无头模式（headless）— 失败 | 步骤 | 操作 | 结果 | |------|------|------| | 1 | 安装系统依赖 `libnspr4.so` 等 | ❌ 需要sudo权限 | | 2 | 用 Windows Chrome | ❌ WSL2无法跨边界运行 | | 3 | PowerShell启动Chrome调试端口 | ❌ agent-browser无法连接 | | 4 | 用代理 `172.18.176.1:7890` 访问 | ✅ 百度成功 | | 5 | 访问抖音 | ❌ 反爬验证循环 | | 6 | 访问B站 | ❌ 二维码空白（检测到自动化工具）| **问题根因**： - WSL2 缺少系统库，但用户后来手动安装了 - 无头模式被抖音/B",
+      "recallCount": 1,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 0.7649505983436653,
+      "maxScore": 0.7649505983436653,
+      "firstRecalledAt": "2026-04-12T22:10:55.043Z",
+      "lastRecalledAt": "2026-04-12T22:10:55.043Z",
+      "queryHashes": [
+        "d12c9b8a1518"
+      ],
+      "recallDays": [
+        "2026-04-13"
+      ],
+      "conceptTags": [
+        "网关",
+        "音频/视频转换受限",
+        "agent-browser",
+        "tmp/agent-browser",
+        "openclaw/skills/agent-browser",
+        "skill.md",
+        "libnspr4.so",
+        "agent-browser无法连接"
       ]
     }
   }
