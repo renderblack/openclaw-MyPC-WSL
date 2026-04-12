@@ -48,6 +48,50 @@
 - **摘要**：3DGS 革新了快速渲染，但球谐函数表达能力有限。本文提出用有向高斯替代斑点（blobs）实现高保真表面重建。
 - **标签**：表面重建、新表示方法
 
+---
+
+## 2026-04-12 新增
+
+#### Generative 3DGS：大气降尺度与预报的生成式高斯泼溅
+- **来源**：arXiv
+- **日期**：2026-04-09
+- **链接**：https://arxiv.org/search/?searchtype=all&query=Generative+3D+Gaussian+Splatting+Atmospheric+Downscaling
+- **作者**：Tao Hana, Zhibin Wen, Zhenghao Chen 等
+- **摘要**：大气降尺度与预报中，生成高分辨率输出因多尺度适应性和数据表示效率受限。本文提出 3D Gaussian Splatting 用于任意分辨率大气预测。
+- **标签**：大气科学、生成式模型、科学应用
+
+#### ReconPhys：单目视频联合重建外观与物理属性
+- **来源**：arXiv
+- **日期**：2026-04-09
+- **链接**：https://arxiv.org/search/?searchtype=all&query=ReconPhys+Physical+Attributes+3DGS
+- **作者**：Boyuan Wang, Xiaofeng Wang 等
+- **摘要**：首个前馈框架，从单目视频联合学习物理属性估计和 3DGS 重建。双分支架构兼顾外观和物理属性。
+- **标签**：单目视频、物理属性、前馈重建
+
+#### Splats under Pressure：边缘GPU约束下的性能-能耗权衡
+- **来源**：arXiv
+- **日期**：2026-04-08
+- **链接**：https://arxiv.org/search/?searchtype=all&query=Splats+under+Pressure+Edge+GPU+3DGS
+- **作者**：Muhammad Fahim Tajwar, Arthur Wuhrlin, Bhojan Anand
+- **摘要**：研究边缘客户端在不同高斯数量和 GPU 算力约束下实时 3DGS 光栅化的可行性，探讨性能-能耗权衡。
+- **标签**：边缘计算、实时渲染、资源优化
+
+#### Genie Sim PanoRecon：单张全景图快速生成沉浸式场景
+- **来源**：arXiv
+- **日期**：2026-04-08
+- **链接**：https://arxiv.org/search/?searchtype=all&query=Genie+Sim+PanoRecon+Panorama+3DGS
+- **作者**：Zhijun Li, Yongxin Su, Di Yang 等
+- **摘要**：前馈式高斯泼溅方法，从单张全景图快速生成沉浸式场景。
+- **标签**：全景图、场景生成、前馈方法
+
+#### AnchorSplat：基于3D几何先验的前馈3DGS
+- **来源**：arXiv
+- **日期**：2026-04-09
+- **链接**：https://arxiv.org/search/?searchtype=all&query=AnchorSplat+3D+Geometric+Priors
+- **作者**：Xiaoxue Zhang, Xiaoxu Zheng, Yixuan Yin 等
+- **摘要**：近期前馈高斯重建模型采用像素对齐公式，将每个 2D 像素映射到 3D 高斯。AnchorSplat 引入 3D 几何先验提升前馈重建质量。
+- **标签**：前馈重建、几何先验、深度估计
+
 #### GS-Surrogate：用于模拟参数空间探索的可变形高斯泼溅
 - **来源**：arXiv
 - **日期**：2026-04-07
