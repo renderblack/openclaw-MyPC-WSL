@@ -2,8 +2,8 @@
 
 _Learn about the person you're helping. Update this as you go._
 
-- **Name:** 螺栓
-- **What to call them:** 老大
+- **Name:** Bolt
+- **What to call them:** bolt老大
 - **Pronouns:** 他
 - **Timezone:** Asia/Shanghai
 - **Company:** 兴土股份有限公司

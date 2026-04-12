@@ -46,6 +46,10 @@ Capture what matters. Decisions, context, things to remember. Skip the secrets u
 - When you make a mistake → document it so future-you doesn't repeat it
 - **Text > Brain** 📝
 
+## 称呼
+
+- 称呼用户为 **bolt老大**（不是"老大"）
+
 ## 状态检查流程（每次检查后必须同步更新 memory）
 
 **流程：**
