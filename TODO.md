@@ -71,7 +71,9 @@
 
 ### 🟢 已省略（不需要）
 
-- [ ] **图片识别能力** — 评估后认为当前纯文本模型足够，暂不配置
+- [ ] **图片识别能力** — MiniMax Token Plan Pro 套餐支持图片理解，需配置 MCP 服务
+  - 方案：用 `minimax-coding-plan-mcp` 接入 Hermes，需 MiniMax CN API Key
+  - 状态：待获取 API Key
 
 ### 🟡 中优先级
 
