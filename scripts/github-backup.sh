@@ -6,7 +6,7 @@ WORKSPACE="/home/xiong/.openclaw/workspace"
 cd "$WORKSPACE" || exit 1
 
 # 配置 Git 代理（WSL2 环境通过 Windows Clash 访问 GitHub）
-git config --global http.proxy http://172.18.176.1:7890
+git config --global http.proxy http://172.30.208.1:7890
 
 # 检查是否有变更
 if git diff --quiet && git diff --cached --quiet; then
