@@ -119,24 +119,17 @@ Capture what matters. Decisions, context, things to remember. Skip the secrets u
 
 ---
 
-## ⚠️ 环境兼容性检查（重要教训）
+## ⚠️ 环境兼容性检查
 
-**当前运行环境**: **Windows 10 (教育版) + PowerShell (Native)** - 无 WSL2 依赖。所有脚本均为 `.ps1` 格式，路径使用 Windows 格式 (`C:\...`)。
+**当前运行环境**: **WSL2 Ubuntu** (Linux 5.10.16.3-microsoft-standard-WSL2)
 
-**实际代理**: `127.0.0.1:7890` (本地代理，如 Clash/Clash Meta)。
+**代理**: `http://127.0.0.1:7890` (Clash)
 
-Before recommending or installing any tool/software, always check environment compatibility first. Common compatibility issues:
+Before recommending or installing any tool/software, always check environment compatibility first:
 
-- **Windows Native vs WSL2**: OpenClaw runs natively on Windows PowerShell. Do not assume WSL2/Linux paths (`/home/...`) or commands (`df`, `ps`, `chmod`).
-- **Node version**: Some tools require specific Node.js versions.
-- **Platform-specific tools**: Some skills are macOS-only (apple-*, bear-notes, etc.).
-- **Disk Space**: Ensure C 盘至少有 30 GB 可用空间。
-
-**When in doubt, report the compatibility issue before recommending installation. Don't assume it will work.**
-
-> **教训来源（2026-03-28）**：推荐安装 CC-Switch 前未确认 OpenClaw 运行在 WSL2（Linux），而 CC-Switch 是 Windows 应用，导致安装后无法连接，白费功夫。
->
-> **最新教训（2026-04-04）**：配置和文档中保留了大量 WSL2 路径和命令，导致混淆。已全面迁移到 Windows Native 环境，所有脚本改为 `.ps1`，检查命令改为 PowerShell 原生命令。代理地址从 WSL 内网 (`172.31.0.1`) 修正为本地代理 (`127.0.0.1`)。
+- **Linux vs Windows**: 当前是 WSL2 Linux 环境，注意路径格式 (`/home/xiong/...`) 和命令差异
+- **Node version**: Some tools require specific Node.js versions
+- **Platform-specific tools**: Some skills are macOS-only (apple-*, bear-notes, etc.)
 
 ## Group Chats
 
