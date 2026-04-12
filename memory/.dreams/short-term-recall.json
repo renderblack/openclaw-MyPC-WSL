@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-04-11T01:28:57.799Z",
+  "updatedAt": "2026-04-12T12:02:49.683Z",
   "entries": {
     "memory:memory/2026-04-05.md:116:148": {
       "key": "memory:memory/2026-04-05.md:116:148",
@@ -217,6 +217,37 @@
         "工作",
         "进行",
         "目标"
+      ]
+    },
+    "memory:memory/2026-04-06.md:27:66": {
+      "key": "memory:memory/2026-04-06.md:27:66",
+      "path": "memory/2026-04-06.md",
+      "startLine": 27,
+      "endLine": 66,
+      "source": "memory",
+      "snippet": "4. 第一个进程启动超时（>30秒），Task Scheduler 报 267009 5. 第二个进程成功接管，最终运行正常 **修复方案（待执行）**： 1. 把 LogonTrigger 改成 BootTrigger 2. 增加 RestartInterval 让任务失败后自动重试 **分析记录位置**：`docs/网关问题分析.md`（待创建） ### 3. 其他发现 - 401 认证错误（MiniMax API token 问题） - plugins.allow 未设置的安全警告 - 多次 restart 不是真正的 crash，而是竞争条件 --- ## 待办更新 - MEMORY.md 中优先级 #6 后面插入\"网关启动冲突问题\" - 创建 docs/网关问题分析.md 详细记录分析过程 # 2026-04-06 工作记录 ## 早晨检查 (07:03-07:51) ### 1. C盘空间误报 - 老大问\"C盘之前有80G可用的，怎么不足30了？\" - 实际检查：C盘还有 **84.54 GB 可用** (62.1% 已用) - 原因：我错误地读取了 MEMORY.md 里的旧数据，没有先执行命令检查 - **教训**：检查状态必须跑命令，不能读 memory 当检查结果 - **已更新**：MEMORY.md 中的 C盘数据 + AGENTS.md + HEARTBEAT.md ### 2. 待办事项确认 - 确认了高、中、低优先级任务列表 - 主要任务：Claude Code 源码分析、FFmpeg CLI 测试、ClawLibrary 修复",
+      "recallCount": 1,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 0.7178735887183425,
+      "maxScore": 0.7178735887183425,
+      "firstRecalledAt": "2026-04-12T12:02:49.683Z",
+      "lastRecalledAt": "2026-04-12T12:02:49.683Z",
+      "queryHashes": [
+        "d4f8ea7564c5"
+      ],
+      "recallDays": [
+        "2026-04-12"
+      ],
+      "conceptTags": [
+        "网关",
+        "docs/网关问题分析.md",
+        "plugins.allow",
+        "memory.md",
+        "03-07",
+        "84.54",
+        "62.1",
+        "agents.md"
       ]
     }
   }
